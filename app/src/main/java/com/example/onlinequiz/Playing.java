@@ -36,8 +36,6 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
 
-
-
         txtScore = (TextView)findViewById(R.id.txtScore);
         txtQuestionNum = (TextView)findViewById(R.id.txtTotalQuestion);
         question_text = (TextView)findViewById(R.id.question_text);
@@ -66,20 +64,24 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
                 showQuestion(++index);
             }
             else {
-                Intent intent = new Intent(this,Done.class);
-                Bundle dataSend = new Bundle();
-                dataSend.putInt("SCORE",score);
-                dataSend.putInt("TOTAL",totalQuestion);
-                dataSend.putInt("CORRECTED",correctAnswer);
-                intent.putExtras(dataSend);
-                startActivity(intent);
-                finish();
+                showQuestion(++index);
             }
             txtScore.setText(String.format("%d",score));
+        } else {
+            Intent intent = new Intent(this,Done.class);
+            Bundle dataSend = new Bundle();
+            dataSend.putInt("SCORE",score);
+            dataSend.putInt("TOTAL",totalQuestion);
+            dataSend.putInt("CORRECTED",correctAnswer);
+            intent.putExtras(dataSend);
+            startActivity(intent);
+            finish();
         }
+
     }
 
     private void showQuestion(int index) {
+
         if(index < totalQuestion){
             thisQuestion++;
             txtQuestionNum.setText(String.format("%d / %d",thisQuestion,totalQuestion));
