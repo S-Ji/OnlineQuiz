@@ -10,4 +10,6 @@ public class Commom {
     public static String categoryId;
     public static User currentUser;
     public static List<Question> questionsList = new ArrayList<>();
+    public static List<Question> questionsRight = new ArrayList<>();
+    public static List<Question> questionsWrong = new ArrayList<>();
 }

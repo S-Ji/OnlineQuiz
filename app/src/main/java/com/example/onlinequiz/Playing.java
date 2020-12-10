@@ -1,6 +1,7 @@
 package com.example.onlinequiz;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinequiz.Common.Commom;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 public class Playing extends AppCompatActivity implements View.OnClickListener {
@@ -23,7 +26,8 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
     CountDownTimer mCountDown;
     int index=0, score=0, thisQuestion=0, totalQuestion, correctAnswer;
 
-
+    FirebaseDatabase database;
+    DatabaseReference questions;
 
     ProgressBar progressBar;
     ImageView question_image;
@@ -35,7 +39,8 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
-
+        database = FirebaseDatabase.getInstance();
+        questions = database.getReference("Questions");
         txtScore = (TextView)findViewById(R.id.txtScore);
         txtQuestionNum = (TextView)findViewById(R.id.txtTotalQuestion);
         question_text = (TextView)findViewById(R.id.question_text);
@@ -51,20 +56,31 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         btnB.setOnClickListener(this);
         btnC.setOnClickListener(this);
         btnD.setOnClickListener(this);
+
+
     }
 
     @Override
     public void onClick(View v) {
         mCountDown.cancel();
+        final MediaPlayer mp1 = MediaPlayer.create(this, R.raw.correct);
+        final MediaPlayer mp2 = MediaPlayer.create(this, R.raw.wrong);
+
         if(index < totalQuestion){
             Button clickedButton = (Button)v;
             if(clickedButton.getText().equals(Commom.questionsList.get(index).getCorrectAnswer())){
+                mp2.pause();
+                mp1.start();
                 score+=10;
                 correctAnswer++;
                 showQuestion(++index);
+//                addToQuestionRight(index);
             }
             else {
+                mp1.pause();
+                mp2.start();
                 showQuestion(++index);
+//                addToQuestionWrong(index);
             }
             txtScore.setText(String.format("%d",score));
         } else {
@@ -79,6 +95,8 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
+
+
 
     private void showQuestion(int index) {
 

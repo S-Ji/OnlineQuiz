@@ -1,6 +1,7 @@
 package com.example.onlinequiz;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,12 +36,22 @@ public class Done extends AppCompatActivity {
         getTxtResultQuestion = (TextView)findViewById(R.id.txtTotalQuestion);
         progressBar = (ProgressBar)findViewById(R.id.doneProgressBar);
         btnTryAgain = (Button)findViewById(R.id.btnTryAgain);
-
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.crash);
+        final MediaPlayer mp3 = MediaPlayer.create(this, R.raw.wow);
+        final MediaPlayer mp4 = MediaPlayer.create(this, R.raw.meme);
+        final MediaPlayer mp5 = MediaPlayer.create(this, R.raw.omg);
+        final MediaPlayer mp6 = MediaPlayer.create(this, R.raw.johnsena);
         btnTryAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Done.this,Home.class);
                 startActivity(intent);
+                mp4.pause();
+                mp3.pause();
+                mp5.pause();
+                mp6.pause();
+                mp.start();
+
                 finish();
             }
         });
@@ -51,7 +62,18 @@ public class Done extends AppCompatActivity {
             int score = extra.getInt("SCORE");
             int totalQuestion = extra.getInt("TOTAL");
             int correctAnswer = extra.getInt("CORRECTED");
-
+            if(score < 50) {
+                mp4.start();
+            }
+            if(score >= 50 && score <= 70) {
+                mp3.start();
+            }
+            if(score > 70 && score <= 90) {
+                mp5.start();
+            }
+            if(score > 90) {
+                mp6.start();
+            }
             txtResultScore.setText(String.format("SCORE : %d",score));
             getTxtResultQuestion.setText(String.format("CORRECTED : %d / %d",correctAnswer,totalQuestion));
 

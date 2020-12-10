@@ -6,7 +6,7 @@
     android:layout_height="100dp"
     android:padding="16dp"
     android:layout_margin="16dp"
-
+    android:background="@drawable/bg_app"
     app:cardElevation="4dp"
     >
 

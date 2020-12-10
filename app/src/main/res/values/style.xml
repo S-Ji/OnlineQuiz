@@ -13,5 +13,8 @@
     <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
         <item name="colorButtonNormal">#B7FC0F</item>
     </style>
+    <style name="Button.Grean" parent="ThemeOverlay.AppCompat">
+        <item name="colorAccent">#72FF0D</item>
+    </style>
 
 </resources>
