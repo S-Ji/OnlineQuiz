@@ -86,7 +86,9 @@ public class Done extends AppCompatActivity {
                     .setValue(new QuestionScore(String.format("%s_%s", Commom.currentUser.getUserName(),
                                                 Commom.categoryId),
                                                 Commom.currentUser.getUserName(),
-                                                String.valueOf(score)));
+                                                String.valueOf(score),
+                                                Commom.categoryId,
+                                                Commom.categoryName));
 
 
         }
