@@ -40,6 +40,9 @@ DatabaseReference users;
         btnSignIn=(Button)findViewById(R.id.btn_sign_in);
         btnSignUp=(Button)findViewById(R.id.btn_sign_up);
 
+        // IGNORE SIGN IN
+        //signIn("anh123","1234");
+
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

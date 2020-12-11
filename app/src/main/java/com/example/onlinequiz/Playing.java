@@ -34,7 +34,6 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
     Button btnA,btnB,btnC,btnD;
     TextView txtScore, txtQuestionNum,question_text;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,8 +55,6 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         btnB.setOnClickListener(this);
         btnC.setOnClickListener(this);
         btnD.setOnClickListener(this);
-
-
     }
 
     @Override
@@ -99,7 +96,6 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
 
 
     private void showQuestion(int index) {
-
         if(index < totalQuestion){
             thisQuestion++;
             txtQuestionNum.setText(String.format("%d / %d",thisQuestion,totalQuestion));
@@ -141,7 +137,8 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        totalQuestion = Commom.questionsList.size();
+        //totalQuestion = Commom.questionsList.size();
+        totalQuestion = Commom.testQuestionQty;
         mCountDown = new CountDownTimer(TIMEOUT,INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {

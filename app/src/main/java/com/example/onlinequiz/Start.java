@@ -3,8 +3,10 @@ package com.example.onlinequiz;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,28 +23,68 @@ import java.util.Collections;
 
 public class Start extends AppCompatActivity {
     Button btnPlay;
+    RadioGroup radioGroupQuestionQty;
 
     FirebaseDatabase database;
     DatabaseReference questions;
+    int questionQty = 5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        mapping();
+        // set default
+
         database = FirebaseDatabase.getInstance();
         questions = database.getReference("Questions");
 
         loadQuestion(Commom.categoryId);
-        btnPlay = (Button)findViewById(R.id.btnPlay);
+        initEvents();
+    }
+
+    private void initEvents(){
+        onBtnPlayClicked();
+        onQuestionQtyRadioChecked();
+    }
+
+    private void onQuestionQtyRadioChecked(){
+        radioGroupQuestionQty.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.radio5:
+                        questionQty = 5;
+                        break;
+                    case R.id.radio10:
+                        questionQty = 10;
+                        break;
+                    case R.id.radio15:
+                        questionQty = 15;
+                        break;
+                }
+            }
+        });
+    }
+
+    private void onBtnPlayClicked(){
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.crash);
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Commom.testQuestionQty = (questionQty<=Commom.questionsList.size()) ? questionQty : Commom.questionsList.size();
                 Intent intent = new Intent(Start.this,Playing.class);
                 startActivity(intent);
                 mp.start();
                 finish();
             }
         });
+    }
+
+    private void mapping(){
+        btnPlay = (Button)findViewById(R.id.btnPlay);
+        radioGroupQuestionQty = (RadioGroup)findViewById(R.id.radioGroupQuestionQty);
     }
     private void loadQuestion(String categoryId) {
         // clear list if have old question
@@ -56,6 +98,9 @@ public class Start extends AppCompatActivity {
                     Question ques = postSnapshot.getValue(Question.class);
                     Commom.questionsList.add(ques);
                 }
+                // RANDOM LIST
+                Commom.shuffleQuestionList();
+                Log.d("xxx", "question list size "+Commom.questionsList.size());
             }
 
             @Override

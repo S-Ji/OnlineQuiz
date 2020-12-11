@@ -1,7 +1,7 @@
 package com.example.onlinequiz.Model;
 
 public class Question {
-    private String Question, A,B,C,D,CorrectAnswer,CategoryId,IsImageQuestion;
+    private String Question, A,B,C,D,CorrectAnswer,CategoryId,IsImageQuestion, IsImageAnswer;
 
     public Question() {
     }
