@@ -32,7 +32,8 @@
             android:layout_height="20dp"
             android:text=" Choose the number of questions:"
             android:textSize="16sp"
-            ></TextView>
+            android:textColor="@color/colorPrimaryDark"
+            />
 
         <RadioGroup
             android:id="@+id/radioGroupQuestionQty"
@@ -51,7 +52,9 @@
                 android:layout_weight="1"
                 android:textSize="16sp"
                 android:checked="true"
-                android:text="5"></RadioButton>
+                android:textColor="@color/colorPrimaryDark"
+                android:text="5"
+                />
 
             <RadioButton
                 android:id="@+id/radio10"
@@ -59,7 +62,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="16sp"
-                android:text="10"></RadioButton>
+                android:textColor="@color/colorPrimaryDark"
+                android:text="10"
+                />
+
 
             <RadioButton
                 android:id="@+id/radio15"
@@ -67,7 +73,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="16sp"
-                android:text="15"></RadioButton>
+                android:textColor="@color/colorPrimaryDark"
+                android:text="15"
+                />
         </RadioGroup>
 
 
@@ -80,6 +88,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="100dp"
+        android:background="#fff"
         app:cardElevation="4dp">
         <Button
             android:id="@+id/btnPlay"
