@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Commom {
-    public static String categoryId;
+    public static String categoryId, categoryName;
     public static User currentUser;
     public static int testQuestionQty = 5;
     public static List<Question> questionsList = new ArrayList<>();

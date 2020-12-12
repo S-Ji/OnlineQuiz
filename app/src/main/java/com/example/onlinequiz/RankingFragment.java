@@ -1,5 +1,6 @@
 package com.example.onlinequiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,14 +83,16 @@ public class RankingFragment extends Fragment {
         ) {
 
             @Override
-            protected void populateViewHolder(RankingViewHolder rankingViewHolder, Ranking ranking, int i) {
+            protected void populateViewHolder(RankingViewHolder rankingViewHolder,final Ranking ranking, int i) {
                 rankingViewHolder.txt_name.setText(ranking.getUserName());
                 rankingViewHolder.txt_score.setText(String.valueOf(ranking.getScore()));
-                //crash when click item
+                //detail score when click item
                 rankingViewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-
+                        Intent scoreDetail = new Intent(getActivity(),ScoreDetail.class);
+                        scoreDetail.putExtra("viewUser",ranking.getUserName());
+                        startActivity(scoreDetail);
                     }
                 });
             }
