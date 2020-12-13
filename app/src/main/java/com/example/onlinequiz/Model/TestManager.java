@@ -1,5 +1,7 @@
 package com.example.onlinequiz.Model;
 
+import com.google.gson.JsonArray;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,13 +11,23 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class TestManager {
-    private int max = 5;
+    private int max  =10 ;
+    private ArrayList<Test> testArrayList = new ArrayList<>();
 
-    private ArrayList<Test> testArrayList;
-
-    public TestManager(){
-        testArrayList = new ArrayList<>();
+    public TestManager(JSONArray jsonArray){
+        for (int i =0; i< jsonArray.length(); i++){
+            // Test
+            try {
+                JSONObject testObject = jsonArray.getJSONObject(i);
+                Test test = new Test(testObject);
+                testArrayList.add(test);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    public TestManager(){ }
 
     public void sort(){
         Collections.sort(testArrayList, new Comparator<Test>() {
@@ -27,8 +39,8 @@ public class TestManager {
     }
 
     public void add(Test test){
-        testArrayList.add(test);
-        if (testArrayList.size() > max) remove(0);
+        testArrayList.add(0,test);
+        if (testArrayList.size() > max) remove(max);
     }
 
     public void remove(int index){
@@ -55,19 +67,4 @@ public class TestManager {
     public void setTestArrayList(ArrayList<Test> testArrayList) {
         this.testArrayList = testArrayList;
     }
-
-    public void setDataByJsonArray(JSONArray jsonArray){
-        /*
-        for (int i =0; i< jsonArray.length(); i++){
-            // Test
-            try {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Test test = new Test
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-         */
-    }
-
 }

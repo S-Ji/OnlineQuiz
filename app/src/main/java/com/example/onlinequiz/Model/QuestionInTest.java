@@ -1,5 +1,7 @@
 package com.example.onlinequiz.Model;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,20 +9,36 @@ import java.util.ArrayList;
 
 public class QuestionInTest {
     private String questionId;
-    private ArrayList<String> answerOrder;
+    private ArrayList<String> answerOrder = new ArrayList<>();
     private String userAnswer;
     private Question question;
 
     public QuestionInTest(){}
 
+    public QuestionInTest(JSONObject jsonObject){
+        try {
+            setQuestionId(jsonObject.getString("QuestionId"));
+            setUserAnswer(jsonObject.getString("UserAnswer"));
+            // answer order
+            String answerOrderString = jsonObject.getString("AnswerOrder");
+            String[] answerOrderArray = answerOrderString.split("\\|");
+            answerOrder.add(answerOrderArray[0]);
+            answerOrder.add(answerOrderArray[1]);
+            answerOrder.add(answerOrderArray[2]);
+            answerOrder.add(answerOrderArray[3]);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public QuestionInTest(String questionId, String answerOrder, String userAnswer){
         this.setQuestionId(questionId);
         //this.setAnswerOrder(answerOrder.split("\\|"));
         this.setUserAnswer(userAnswer);
-        this.loadQuestion();
     }
 
-    private void loadQuestion(){
+    public void loadQuestion(){
+        Log.d("xxx", "load question");
     }
 
     public String getQuestionId() {
@@ -54,9 +72,9 @@ public class QuestionInTest {
     public JSONObject getJsonObject(){
         JSONObject obj = new JSONObject();
         try {
-            obj.put("questionId", questionId);
-            obj.put("answerOrder", getSavingAnswerOrder());
-            obj.put("userAnswer", getUserAnswer());
+            obj.put("QuestionId", questionId);
+            obj.put("AnswerOrder", getSavingAnswerOrder());
+            obj.put("UserAnswer", getUserAnswer());
         } catch (JSONException e) {
             e.printStackTrace();
         }

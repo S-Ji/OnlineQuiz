@@ -3,6 +3,7 @@ package com.example.onlinequiz.Model;
 public class Question {
     private String id;
     private String Question, A,B,C,D,CorrectAnswer,CategoryId,IsImageQuestion, IsImageAnswer;
+    private static String[] categoryArr = new String[]{"English Easy", "English Normal", "English Hard", "Memes", "Games"};
 
     public Question() {
     }
@@ -88,5 +89,10 @@ public class Question {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public static String getCategoryNameById(String categoryId){
+        int realId = Integer.parseInt(categoryId.substring(1)) -1;
+        return categoryArr[realId];
     }
 }

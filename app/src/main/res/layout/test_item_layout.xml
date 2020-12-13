@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:id="@+id/rltLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/txtScoreLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Score: "
+            android:textSize="16sp"></TextView>
+
+        <TextView
+            android:id="@+id/txtCategoryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category: "
+            android:layout_below="@id/txtScoreLabel"
+            android:textSize="16sp"></TextView>
+        <TextView
+            android:id="@+id/txtDateLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test date: "
+            android:layout_below="@id/txtCategoryLabel"
+            android:textSize="16sp"></TextView>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rltRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/rltLeft"
+        android:layout_marginLeft="30dp"
+        >
+
+        <TextView
+            android:id="@+id/txtScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100"
+            android:textSize="16sp"></TextView>
+
+        <TextView
+            android:id="@+id/txtCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Easy"
+            android:layout_below="@id/txtScore"
+            android:textSize="16sp"></TextView>
+
+
+        <TextView
+            android:id="@+id/txtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtCategory"
+            android:text="14/12/20120"
+            android:textSize="16sp"></TextView>
+    </RelativeLayout>
+
+
+</RelativeLayout>

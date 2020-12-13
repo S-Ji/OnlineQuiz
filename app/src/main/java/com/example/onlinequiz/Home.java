@@ -8,13 +8,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.onlinequiz.Common.Commom;
 import com.example.onlinequiz.ViewHolder.Activity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -30,17 +30,23 @@ public class Home extends Activity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 switch (item.getItemId()){
                     case R.id.action_category:
                         selectedFragment = CategoryFragment.newInstance();
+                        transaction.replace(R.id.frame_layout,selectedFragment);
+                        transaction.commit();
                         break;
                     case R.id.action_ranking:
                         selectedFragment = RankingFragment.newInstance();
+                        transaction.replace(R.id.frame_layout,selectedFragment);
+                        transaction.commit();
+                        break;
+                    case R.id.action_myTests:
+                        Intent i = new Intent(Home.this, MyTestActivity.class);
+                        startActivity(i);
                         break;
                 }
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_layout,selectedFragment);
-                transaction.commit();
                 return true;
             }
         });
@@ -98,6 +104,7 @@ public class Home extends Activity {
         editor.apply();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Commom.setCurrentUser(null);
         startActivity(intent);
         finish();
     }

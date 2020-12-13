@@ -1,16 +1,38 @@
 package com.example.onlinequiz.Common;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class Helper {
-    public static String getCurrentISODateString(){
+    public static String getCurrentISODateString() {
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
         df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
         return nowAsISO;
+    }
+
+    public static Date convertISODateStringToDate(String string) {
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        try {
+            Date result1 = df1.parse(string);
+            return result1;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String getTestDate(String string) {
+        Date date = convertISODateStringToDate(string);
+        if (date != null) {
+            DateFormat parseFormat = new SimpleDateFormat("HH:mm dd/MM/yyy ");
+            String stringDate = parseFormat.format(date);
+            return stringDate;
+        }
+        return null;
     }
 }

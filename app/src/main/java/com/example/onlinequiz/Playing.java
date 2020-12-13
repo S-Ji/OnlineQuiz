@@ -29,6 +29,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Playing extends AppCompatActivity implements View.OnClickListener {
@@ -139,15 +140,33 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
 
     private void displayAnswer() {
         RandomAnswerQuestion randomAnswerQuestion = new RandomAnswerQuestion();
-        Log.d("xxx", "random :" + randomAnswerQuestion.getRandomAnswerOrder());
-        Toast.makeText(this, "random", Toast.LENGTH_SHORT).show();
-        btnA.setText(getCurrentQuestion().getA());
-        btnB.setText(getCurrentQuestion().getB());
-        btnC.setText(getCurrentQuestion().getC());
-        btnD.setText(getCurrentQuestion().getD());
+        ArrayList<String> answerOrder = randomAnswerQuestion.getRandomAnswerOrder();
+        displayAnswerByLetter(answerOrder.get(0), getCurrentQuestion().getA());
+        displayAnswerByLetter(answerOrder.get(1), getCurrentQuestion().getB());
+        displayAnswerByLetter(answerOrder.get(2), getCurrentQuestion().getC());
+        displayAnswerByLetter(answerOrder.get(3), getCurrentQuestion().getD());
         questionInTest = new QuestionInTest();
         questionInTest.setQuestionId(getCurrentQuestion().getId());
         questionInTest.setAnswerOrder(randomAnswerQuestion.getRandomAnswerOrder());
+    }
+
+    private void displayAnswerByLetter(String letter, String answer){
+        Button btn = null;
+        switch (letter){
+            case "a":
+                btn = btnA;
+                break;
+            case "b":
+                btn = btnB;
+                break;
+            case "c":
+                btn = btnC;
+                break;
+            case "d":
+                btn = btnD;
+                break;
+        }
+        if (btn!=null) btn.setText(answer);
     }
 
     private void displayQuestionNum() {
@@ -182,9 +201,7 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         test.setDate(Helper.getCurrentISODateString());
         Commom.getCurrentUser().getTestManager().add(test);
         saveUser();
-        Log.d("xxx", "test manager size: " + Commom.getCurrentUser().getTestManager().getTestArrayList().size());
 
-        Toast.makeText(this, "show info", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, Done.class);
         Bundle dataSend = new Bundle();
         dataSend.putInt("SCORE", score);
@@ -201,6 +218,7 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        Log.d("xxx", "tests size" + Commom.getCurrentUser().getTestManager().getTestArrayList().size());
                         Log.d("xxx", "tests updated: "+currentUser.getTestManager().getJsonArray().toString());
                     }
                 });

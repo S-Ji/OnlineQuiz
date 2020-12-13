@@ -13,4 +13,10 @@
         android:title="Ranking"
         android:icon="@drawable/ic_baseline_star_24"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_myTests"
+        android:enabled="true"
+        android:title="My tests"
+        android:icon="@drawable/ic_baseline_star_24"
+        app:showAsAction="ifRoom"/>
 </menu>

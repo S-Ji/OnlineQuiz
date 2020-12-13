@@ -63,7 +63,12 @@ public class MainActivity extends Activity {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(edtUser.getText().toString(), edtPassword.getText().toString());
+                String username = edtUser.getText().toString();
+                if (username.trim() != "") {
+                    signIn(username, edtPassword.getText().toString());
+                } else {
+                    Toast.makeText(MainActivity.this, "Enter your username", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -85,40 +90,40 @@ public class MainActivity extends Activity {
         users.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //DataSnapshot userSnapshot = snapshot.child(username);
-                if (snapshot.exists()) {
-                    if (!username.isEmpty()) {
+                if (Commom.getCurrentUser() == null) {
+                    String msg = "";
+                    if (snapshot.exists()) {
                         User loggedUser = snapshot.getValue(User.class);
                         if (loggedUser.getPassWord().equals(pwd)) {
                             saveLoggedUserInfo(username, pwd);
-                            Intent homeActivity = new Intent(MainActivity.this, Home.class);
                             Commom.currentUser = loggedUser;
-                            DataSnapshot testsSnapshot = snapshot.child("tests");
-                            if (testsSnapshot.exists()) {
-                                String testsJsonString = testsSnapshot.getValue().toString();
-                                Log.d("xxx", "tests json string: " + testsJsonString);
-                                Commom.currentUser.setTestManagerByJsonString(testsJsonString);
-                            }else{
-                                Log.d("xxx", "no tests data found");
-                            }
+                            setUserTests(snapshot);
+
+                            // start home activity
+                            Intent homeActivity = new Intent(MainActivity.this, Home.class);
                             startActivity(homeActivity);
                             finish();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Wrong Password!", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(MainActivity.this, "Enter your user name!", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "User is not exists!", Toast.LENGTH_SHORT).show();
+                        } else msg = "Wrong Password!";
+                    } else msg = "User is not exists!";
+                    if (msg != "")
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(MainActivity.this, "Please check you internet connection!", Toast.LENGTH_SHORT).show();
             }
+
         });
+    }
+
+    private void setUserTests(DataSnapshot userSnapshot) {
+        DataSnapshot testsSnapshot = userSnapshot.child("tests");
+        if (testsSnapshot.exists()) {
+            String testsJsonString = testsSnapshot.getValue().toString();
+            Commom.currentUser.setTestManagerByJsonString(testsJsonString);
+        } else Toast.makeText(this, "Not tests", Toast.LENGTH_SHORT).show();
     }
 
     private void saveLoggedUserInfo(String username, String password) {
@@ -189,4 +194,5 @@ public class MainActivity extends Activity {
         super.onBackPressed();
         finishAffinity();
     }
+
 }

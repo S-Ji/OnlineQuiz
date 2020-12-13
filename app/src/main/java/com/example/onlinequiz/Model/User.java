@@ -17,7 +17,7 @@ public class User {
     private String userName;
     private String passWord;
     private String email;
-    private TestManager testManager;
+    private TestManager testManager = new TestManager();
 
     public User() {
     }
@@ -61,22 +61,12 @@ public class User {
     }
 
     public void setTestManagerByJsonString(String jsonString){
-        testManager = new TestManager();
         try {
             String str = jsonString.substring(1,jsonString.length()-1);
             JSONArray jsonArray = new JSONArray(str);
-
-            //testManager.se
-            //Log.d("xxx", "array size: "+jsonArray.));
+            setTestManager(new TestManager(jsonArray));
         } catch (JSONException e) {
-            Log.d("xxx", "parse json failed: "+jsonString);
             e.printStackTrace();
         }
-    }
-
-    public HashMap<String, String> getTestManagerMap(){
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("tests", testManager.getSavingJsonString());
-        return hashMap;
     }
 }
