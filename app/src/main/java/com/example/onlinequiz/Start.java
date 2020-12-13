@@ -35,11 +35,8 @@ public class Start extends AppCompatActivity {
         setContentView(R.layout.activity_start);
 
         mapping();
-        // set default
-
         database = FirebaseDatabase.getInstance();
         questions = database.getReference("Questions");
-
         loadQuestion(Commom.categoryId);
         initEvents();
     }
@@ -86,6 +83,7 @@ public class Start extends AppCompatActivity {
         btnPlay = (Button)findViewById(R.id.btnPlay);
         radioGroupQuestionQty = (RadioGroup)findViewById(R.id.radioGroupQuestionQty);
     }
+
     private void loadQuestion(String categoryId) {
         // clear list if have old question
         if(Commom.questionsList.size() > 0){

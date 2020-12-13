@@ -10,8 +10,6 @@ public class QuestionInTest {
         this.setQuestionId(questionId);
         this.setAnswerOrder(answerOrder.split("\\|"));
         this.setUserAnswer(userAnswer);
-        this.loadQuestion();
-
     }
 
     private void loadQuestion(){

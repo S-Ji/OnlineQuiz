@@ -40,17 +40,12 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_playing);
         database = FirebaseDatabase.getInstance();
         questions = database.getReference("Questions");
-        txtScore = (TextView)findViewById(R.id.txtScore);
-        txtQuestionNum = (TextView)findViewById(R.id.txtTotalQuestion);
-        question_text = (TextView)findViewById(R.id.question_text);
-        question_image = (ImageView)findViewById(R.id.question_image);
-        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        mapping();
+        initEvents();
 
-        btnA = (Button)findViewById(R.id.btnAnswerA);
-        btnB = (Button)findViewById(R.id.btnAnswerB);
-        btnC = (Button)findViewById(R.id.btnAnswerC);
-        btnD = (Button)findViewById(R.id.btnAnswerD);
+    }
 
+    private void initEvents(){
         btnA.setOnClickListener(this);
         btnB.setOnClickListener(this);
         btnC.setOnClickListener(this);
@@ -93,51 +88,67 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-
-
     private void showQuestion(int index) {
         if(index < totalQuestion){
             thisQuestion++;
-            txtQuestionNum.setText(String.format("%d / %d",thisQuestion,totalQuestion));
-            progressBar.setProgress(0);
-            progressValue=0;
-            if(Commom.questionsList.get(index).getIsImageQuestion().equals("true")){
-                //if question img
-                Picasso.with(getBaseContext())
-                        .load(Commom.questionsList.get(index).getQuestion())
-                        .into(question_image);
-                question_image.setVisibility(View.VISIBLE);
-                question_text.setVisibility(View.INVISIBLE);
-            }
-            else {
-                //if question text, set img visible
-                question_text.setText(Commom.questionsList.get(index).getQuestion());
-                question_image.setVisibility(View.INVISIBLE);
-                question_text.setVisibility(View.VISIBLE);
-            }
-            btnA.setText(Commom.questionsList.get(index).getA());
-            btnB.setText(Commom.questionsList.get(index).getB());
-            btnC.setText(Commom.questionsList.get(index).getC());
-            btnD.setText(Commom.questionsList.get(index).getD());
-
+            displayQuestionNum();
+            resetProgress();
+            displayQuestion();
+            displayAnswer();
             mCountDown.start();
         }
-        else {
-            Intent intent = new Intent(this,Done.class);
-            Bundle dataSend = new Bundle();
-            dataSend.putInt("SCORE",score);
-            dataSend.putInt("TOTAL",totalQuestion);
-            dataSend.putInt("CORRECTED",correctAnswer);
-            intent.putExtras(dataSend);
-            startActivity(intent);
-            finish();
+        else onDone();
+    }
+
+    private void displayQuestionNum(){
+        txtQuestionNum.setText(String.format("%d / %d",thisQuestion,totalQuestion));
+    }
+
+    private void resetProgress(){
+        progressBar.setProgress(0);
+        progressValue=0;
+    }
+
+    private void displayQuestion(){
+        if(Commom.questionsList.get(index).getIsImageQuestion().equals("true")){
+            //if question img
+            Picasso.with(getBaseContext())
+                    .load(Commom.questionsList.get(index).getQuestion())
+                    .into(question_image);
+            question_image.setVisibility(View.VISIBLE);
+            question_text.setVisibility(View.INVISIBLE);
         }
+        else {
+            //if question text, set img visible
+            question_text.setText(Commom.questionsList.get(index).getQuestion());
+            question_image.setVisibility(View.INVISIBLE);
+            question_text.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void displayAnswer(){
+        btnA.setText(Commom.questionsList.get(index).getA());
+        btnB.setText(Commom.questionsList.get(index).getB());
+        btnC.setText(Commom.questionsList.get(index).getC());
+        btnD.setText(Commom.questionsList.get(index).getD());
+    }
+
+
+    private void onDone(){
+        onDone();
+        Intent intent = new Intent(this,Done.class);
+        Bundle dataSend = new Bundle();
+        dataSend.putInt("SCORE",score);
+        dataSend.putInt("TOTAL",totalQuestion);
+        dataSend.putInt("CORRECTED",correctAnswer);
+        intent.putExtras(dataSend);
+        startActivity(intent);
+        finish();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        //totalQuestion = Commom.questionsList.size();
         totalQuestion = Commom.testQuestionQty;
         mCountDown = new CountDownTimer(TIMEOUT,INTERVAL) {
             @Override
@@ -153,5 +164,18 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
             }
         };
         showQuestion(index);
+    }
+
+    private void mapping(){
+        txtScore = (TextView)findViewById(R.id.txtScore);
+        txtQuestionNum = (TextView)findViewById(R.id.txtTotalQuestion);
+        question_text = (TextView)findViewById(R.id.question_text);
+        question_image = (ImageView)findViewById(R.id.question_image);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
+
+        btnA = (Button)findViewById(R.id.btnAnswerA);
+        btnB = (Button)findViewById(R.id.btnAnswerB);
+        btnC = (Button)findViewById(R.id.btnAnswerC);
+        btnD = (Button)findViewById(R.id.btnAnswerD);
     }
 }
