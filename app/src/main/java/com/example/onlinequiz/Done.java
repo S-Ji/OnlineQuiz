@@ -45,13 +45,12 @@ public class Done extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Done.this,Home.class);
-                startActivity(intent);
                 mp4.pause();
                 mp3.pause();
                 mp5.pause();
                 mp6.pause();
                 mp.start();
-
+                startActivity(intent);
                 finish();
             }
         });

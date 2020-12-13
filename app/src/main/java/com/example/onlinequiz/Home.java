@@ -96,7 +96,9 @@ public class Home extends Activity {
         editor.remove("loggedUsername");
         editor.remove("loggedPassword");
         editor.apply();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         finish();
     }
-
 }

@@ -5,6 +5,8 @@ public class User {
     private String passWord;
     private String email;
 
+    private Test[] tests;
+
     public User() {
     }
 

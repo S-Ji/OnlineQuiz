@@ -41,20 +41,29 @@ public class MainActivity extends Activity {
         database = FirebaseDatabase.getInstance();
         users = database.getReference("Users");
         checkAuth();
+        initEvents();
+    }
 
+    private void initEvents(){
+        onSignUpBtnClick();
+        onSignInBtnClick();
+    }
+
+    private void onSignUpBtnClick(){
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSignUpDialog();
             }
         });
+    }
+
+    private void onSignInBtnClick(){
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn(edtUser.getText().toString(), edtPassword.getText().toString());
             }
-
-
         });
     }
 
@@ -83,7 +92,7 @@ public class MainActivity extends Activity {
                             Intent homeActivity = new Intent(MainActivity.this, Home.class);
                             Commom.currentUser = login;
                             startActivity(homeActivity);
-                            //finish();
+                            finish();
                         } else {
                             Toast.makeText(MainActivity.this, "Wrong Password!", Toast.LENGTH_SHORT).show();
                         }
@@ -166,5 +175,9 @@ public class MainActivity extends Activity {
         btnSignUp = (Button) findViewById(R.id.btn_sign_up);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
+    }
 }

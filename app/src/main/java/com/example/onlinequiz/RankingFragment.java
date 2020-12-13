@@ -49,7 +49,6 @@ public class RankingFragment extends Fragment {
         rankingTbl=database.getReference("Ranking");
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,11 +99,7 @@ public class RankingFragment extends Fragment {
         adapter.notifyDataSetChanged();
         rankingList.setAdapter(adapter);
         return myFragment;
-
     }
-
-
-
 
     private void updateScore(final String userName, RankingCallBack<Ranking> callBack) {
         questionScore.orderByChild("user").equalTo(userName)
