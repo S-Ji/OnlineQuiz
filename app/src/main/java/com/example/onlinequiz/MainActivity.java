@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,12 +45,12 @@ public class MainActivity extends Activity {
         initEvents();
     }
 
-    private void initEvents(){
+    private void initEvents() {
         onSignUpBtnClick();
         onSignInBtnClick();
     }
 
-    private void onSignUpBtnClick(){
+    private void onSignUpBtnClick() {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void onSignInBtnClick(){
+    private void onSignInBtnClick() {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +73,7 @@ public class MainActivity extends Activity {
         if (sharedPreferences != null) {
             String loggedUsername = sharedPreferences.getString("loggedUsername", "");
             String loggedPassword = sharedPreferences.getString("loggedPassword", "");
-            if (!loggedUsername.equals("") && !loggedPassword.equals("")  ) {
+            if (!loggedUsername.equals("") && !loggedPassword.equals("")) {
                 edtUser.setText(loggedUsername);
                 edtPassword.setText(loggedPassword);
                 signIn(loggedUsername, loggedPassword);
@@ -80,17 +81,26 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void signIn(String user, String pwd) {
-        users.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void signIn(String username, String pwd) {
+        users.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child(user).exists()) {
-                    if (!user.isEmpty()) {
-                        User login = snapshot.child(user).getValue(User.class);
-                        if (login.getPassWord().equals(pwd)) {
-                            saveLoggedUserInfo(user, pwd);
+                //DataSnapshot userSnapshot = snapshot.child(username);
+                if (snapshot.exists()) {
+                    if (!username.isEmpty()) {
+                        User loggedUser = snapshot.getValue(User.class);
+                        if (loggedUser.getPassWord().equals(pwd)) {
+                            saveLoggedUserInfo(username, pwd);
                             Intent homeActivity = new Intent(MainActivity.this, Home.class);
-                            Commom.currentUser = login;
+                            Commom.currentUser = loggedUser;
+                            DataSnapshot testsSnapshot = snapshot.child("tests");
+                            if (testsSnapshot.exists()) {
+                                String testsJsonString = testsSnapshot.getValue().toString();
+                                Log.d("xxx", "tests json string: " + testsJsonString);
+                                Commom.currentUser.setTestManagerByJsonString(testsJsonString);
+                            }else{
+                                Log.d("xxx", "no tests data found");
+                            }
                             startActivity(homeActivity);
                             finish();
                         } else {
@@ -102,7 +112,6 @@ public class MainActivity extends Activity {
                 } else {
                     Toast.makeText(MainActivity.this, "User is not exists!", Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override
@@ -112,7 +121,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void saveLoggedUserInfo(String username, String password){
+    private void saveLoggedUserInfo(String username, String password) {
         SharedPreferences sharedPreferences = getSharedParams();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("loggedUsername", username);

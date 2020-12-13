@@ -4,19 +4,32 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Helper;
 import com.example.onlinequiz.Model.Question;
+import com.example.onlinequiz.Model.QuestionInTest;
+import com.example.onlinequiz.Model.RandomAnswerQuestion;
+import com.example.onlinequiz.Model.Test;
+import com.example.onlinequiz.Model.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 public class Playing extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,6 +41,7 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
     int index = 0, score = 0, thisQuestion = 0, totalQuestion, correctAnswer;
 
     FirebaseDatabase database;
+    DatabaseReference users;
     DatabaseReference questions;
 
     ProgressBar progressBar;
@@ -36,15 +50,23 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
     TextView txtScore, txtQuestionNum, question_text;
     MediaPlayer correctAnswerMp3;
     MediaPlayer wrongAnswerMp3;
+    Test test;
+    QuestionInTest questionInTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
+        initTest();
         database = FirebaseDatabase.getInstance();
         questions = database.getReference("Questions");
+        users = database.getReference("Users");
         mapping();
         initEvents();
+    }
+
+    private void initTest() {
+        test = new Test();
     }
 
     private void initMp3() {
@@ -68,6 +90,8 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         if (index < totalQuestion) {
             Button clickedButton = (Button) v;
             String userAnswer = clickedButton.getText().toString();
+            questionInTest.setUserAnswer(userAnswer);
+            test.addQuestion(questionInTest);
             if (isCorrectAnswer(userAnswer)) onUserSelectCorrectAnswer();
             else onUserSelectWrongAnswer();
             //
@@ -105,9 +129,25 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
             displayQuestionNum();
             resetProgress();
             displayQuestion();
+
+            // RANDOM ANSWER
             displayAnswer();
+            //
             mCountDown.start();
         } else onDone();
+    }
+
+    private void displayAnswer() {
+        RandomAnswerQuestion randomAnswerQuestion = new RandomAnswerQuestion();
+        Log.d("xxx", "random :" + randomAnswerQuestion.getRandomAnswerOrder());
+        Toast.makeText(this, "random", Toast.LENGTH_SHORT).show();
+        btnA.setText(getCurrentQuestion().getA());
+        btnB.setText(getCurrentQuestion().getB());
+        btnC.setText(getCurrentQuestion().getC());
+        btnD.setText(getCurrentQuestion().getD());
+        questionInTest = new QuestionInTest();
+        questionInTest.setQuestionId(getCurrentQuestion().getId());
+        questionInTest.setAnswerOrder(randomAnswerQuestion.getRandomAnswerOrder());
     }
 
     private void displayQuestionNum() {
@@ -135,14 +175,16 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void displayAnswer() {
-        btnA.setText(getCurrentQuestion().getA());
-        btnB.setText(getCurrentQuestion().getB());
-        btnC.setText(getCurrentQuestion().getC());
-        btnD.setText(getCurrentQuestion().getD());
-    }
-
     private void onDone() {
+        test.setCategoryId(Commom.categoryId);
+        test.setNumberOfQuestion(totalQuestion);
+        test.setScore(score);
+        test.setDate(Helper.getCurrentISODateString());
+        Commom.getCurrentUser().getTestManager().add(test);
+        saveUser();
+        Log.d("xxx", "test manager size: " + Commom.getCurrentUser().getTestManager().getTestArrayList().size());
+
+        Toast.makeText(this, "show info", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, Done.class);
         Bundle dataSend = new Bundle();
         dataSend.putInt("SCORE", score);
@@ -152,6 +194,18 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         startActivity(intent);
         finish();
     }
+
+    private void saveUser() {
+        User currentUser = Commom.getCurrentUser();
+        users.child(currentUser.getUserName()).child("tests").setValue(currentUser.getTestManager().getSavingJsonString())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("xxx", "tests updated: "+currentUser.getTestManager().getJsonArray().toString());
+                    }
+                });
+    }
+
 
     @Override
     protected void onPostResume() {
@@ -186,7 +240,7 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         btnD = (Button) findViewById(R.id.btnAnswerD);
     }
 
-    // SUPPORTED METHODS
+    // SUPPORTED METHOD
     private Question getCurrentQuestion() {
         return Commom.questionsList.get(index);
     }

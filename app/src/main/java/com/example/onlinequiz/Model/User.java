@@ -1,11 +1,23 @@
 package com.example.onlinequiz.Model;
 
+import android.util.ArrayMap;
+import android.util.Log;
+
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private String userName;
     private String passWord;
     private String email;
-
-    private Test[] tests;
+    private TestManager testManager;
 
     public User() {
     }
@@ -38,5 +50,33 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public TestManager getTestManager() {
+        return testManager;
+    }
+
+    public void setTestManager(TestManager testManager) {
+        this.testManager = testManager;
+    }
+
+    public void setTestManagerByJsonString(String jsonString){
+        testManager = new TestManager();
+        try {
+            String str = jsonString.substring(1,jsonString.length()-1);
+            JSONArray jsonArray = new JSONArray(str);
+
+            //testManager.se
+            //Log.d("xxx", "array size: "+jsonArray.));
+        } catch (JSONException e) {
+            Log.d("xxx", "parse json failed: "+jsonString);
+            e.printStackTrace();
+        }
+    }
+
+    public HashMap<String, String> getTestManagerMap(){
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("tests", testManager.getSavingJsonString());
+        return hashMap;
     }
 }

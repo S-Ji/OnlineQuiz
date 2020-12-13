@@ -1,6 +1,7 @@
 package com.example.onlinequiz.Model;
 
 public class Question {
+    private String id;
     private String Question, A,B,C,D,CorrectAnswer,CategoryId,IsImageQuestion, IsImageAnswer;
 
     public Question() {
@@ -79,5 +80,13 @@ public class Question {
 
     public void setIsImageQuestion(String isImageQuestion) {
         this.IsImageQuestion = isImageQuestion;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

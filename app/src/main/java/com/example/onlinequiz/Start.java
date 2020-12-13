@@ -3,7 +3,6 @@ package com.example.onlinequiz;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
@@ -94,11 +93,11 @@ public class Start extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     Question ques = postSnapshot.getValue(Question.class);
+                    ques.setId(postSnapshot.getKey());
                     Commom.questionsList.add(ques);
                 }
                 // RANDOM LIST
                 Commom.shuffleQuestionList();
-                Log.d("xxx", "question list size "+Commom.questionsList.size());
             }
 
             @Override
