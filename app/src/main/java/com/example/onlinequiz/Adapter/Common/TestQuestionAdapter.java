@@ -125,6 +125,10 @@ public class TestQuestionAdapter extends BaseAdapter {
                 // choose wrong answer
                 txt.setBackground(ContextCompat.getDrawable(context, R.drawable.choose_wrong_test_quetsion_answer_button));
                 txt.setTextColor(Color.WHITE);
+            } else if (question.getCorrectAnswer().equals(answer)) {
+                // correct answer
+                txt.setBackground(ContextCompat.getDrawable(context, R.drawable.choose_correct_test_quetsion_answer_button));
+                txt.setTextColor(Color.WHITE);
             } else {
                 // default
                 Log.d("xxx", "default answer: " + answer);
