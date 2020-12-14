@@ -23,7 +23,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/txtTitle"
-        android:layout_marginTop="20dp"></ListView>
+        android:divider="@android:color/transparent"
+        android:dividerHeight="25.0sp"
+        android:layout_marginTop="25sp"
+        android:scrollbars="none"
+        android:layout_marginHorizontal="20dp"
+        ></ListView>
 
 
 </RelativeLayout>

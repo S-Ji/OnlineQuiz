@@ -11,29 +11,26 @@ import android.widget.TextView;
 
 import com.example.onlinequiz.Common.Helper;
 import com.example.onlinequiz.Model.Question;
+import com.example.onlinequiz.Model.QuestionInTest;
 import com.example.onlinequiz.Model.Test;
 import com.example.onlinequiz.R;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class TestAdapter extends BaseAdapter {
+public class TestQuestionAdapter extends BaseAdapter {
     private Context context;
     private int layout;
-    private ArrayList<Test> testArrayList;
+    private ArrayList<QuestionInTest> questionInTestArrayList;
 
-    public TestAdapter(Context context, int layout, ArrayList<Test> testArrayList) {
+    public TestQuestionAdapter(Context context, int layout, ArrayList<QuestionInTest> questionInTestArrayList) {
         this.context = context;
         this.layout = layout;
-        this.testArrayList = testArrayList;
+        this.questionInTestArrayList = questionInTestArrayList;
     }
 
     @Override
     public int getCount() {
-        return testArrayList.size();
+        return questionInTestArrayList.size();
     }
 
     @Override
@@ -48,31 +45,39 @@ public class TestAdapter extends BaseAdapter {
 
 
     class ViewHolder{
-        TextView txtCategory, txtScore, txtDate;
+        TextView txtQuestion, txtA, txtB, txtC, txtD;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TestAdapter.ViewHolder holder;
+        TestQuestionAdapter.ViewHolder holder;
         if (convertView == null){
-            holder = new TestAdapter.ViewHolder();
+            holder = new TestQuestionAdapter.ViewHolder();
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(layout, null);
 
-            holder.txtCategory  = (TextView) convertView.findViewById(R.id.txtCategory);
-            holder.txtScore  = (TextView) convertView.findViewById(R.id.txtScore);
-            holder.txtDate  = (TextView) convertView.findViewById(R.id.txtDate);
+            holder.txtQuestion  = (TextView) convertView.findViewById(R.id.txtQuestion);
+            holder.txtA  = (TextView) convertView.findViewById(R.id.txtA);
+            holder.txtB  = (TextView) convertView.findViewById(R.id.txtB);
+            holder.txtC  = (TextView) convertView.findViewById(R.id.txtC);
+            holder.txtD  = (TextView) convertView.findViewById(R.id.txtD);
             convertView.setTag(holder);
         }else{
-            holder = (TestAdapter.ViewHolder) convertView.getTag();
+            holder = (TestQuestionAdapter.ViewHolder) convertView.getTag();
         }
 
-        Test test = testArrayList.get(position);
-        holder.txtCategory.setText(Question.getCategoryNameById(test.getCategoryId()));
-        holder.txtScore.setText(test.getScore()+"");
-        holder.txtDate.setText(Helper.getTestDate(test.getDate()));
+        QuestionInTest questionInTest = questionInTestArrayList.get(position);
+        int no = position+1;
+        String question = no+". What is the part of human body?";
+        holder.txtQuestion.setText(question);
+        holder.txtA.setText("A. Plane");
+        holder.txtB.setText("B. Hand");
+        holder.txtC.setText("C. Chess");
+        holder.txtD.setText("D. Subject");
+        /*
         Animation animScale = AnimationUtils.loadAnimation(context, R.anim.anim_scale_for_listview_item);
         convertView.startAnimation(animScale);
+        */
         return convertView;
     }
 

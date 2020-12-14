@@ -8,7 +8,9 @@
     </style>
     <style name="MyButton" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight" >#72FF0D</item>
-
+    </style>
+    <style name="TestQuestionAnswerButton" parent="Theme.AppCompat.Light">
+        <item name="colorAccent" >#FFFFFF</item>
     </style>
     <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
         <item name="colorButtonNormal">#B7FC0F</item>

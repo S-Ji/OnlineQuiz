@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_app"
     tools:context=".TestDetailActivity">
+
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="match_parent"
@@ -16,5 +17,16 @@
         android:textColor="@color/white"
         android:background="@color/black"
         android:textSize="25sp"></TextView>
+
+    <ListView
+        android:id="@+id/lvQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/txtTitle"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="25.0sp"
+        android:layout_marginTop="15sp"
+        android:scrollbars="none"
+        ></ListView>
 
 </RelativeLayout>

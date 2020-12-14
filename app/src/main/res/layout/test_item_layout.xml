@@ -14,6 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Score: "
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"></TextView>
 
         <TextView
@@ -22,6 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Category: "
             android:layout_below="@id/txtScoreLabel"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"></TextView>
         <TextView
             android:id="@+id/txtDateLabel"
@@ -29,6 +31,7 @@
             android:layout_height="wrap_content"
             android:text="Test date: "
             android:layout_below="@id/txtCategoryLabel"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"></TextView>
     </RelativeLayout>
     <RelativeLayout
@@ -44,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="100"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"></TextView>
 
         <TextView
@@ -52,6 +56,7 @@
             android:layout_height="wrap_content"
             android:text="Easy"
             android:layout_below="@id/txtScore"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"></TextView>
 
 
@@ -61,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txtCategory"
             android:text="14/12/20120"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"></TextView>
     </RelativeLayout>
 

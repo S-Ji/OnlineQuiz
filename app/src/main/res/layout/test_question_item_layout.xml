@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="15dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txtQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="1. What is a part of human body?"
+        android:background="@color/white"
+        android:padding="5dp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/txtA"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/txtQuestion"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="#D9F3FF"
+        android:gravity="center"
+        android:text="A"
+        ></TextView>
+    <TextView
+        android:id="@+id/txtB"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="#D9F3FF"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="B"
+        android:layout_below="@id/txtA"
+        ></TextView>
+    <TextView
+        android:id="@+id/txtC"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="#D9F3FF"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="C"
+        android:layout_below="@id/txtB"
+        ></TextView>
+    <TextView
+        android:id="@+id/txtD"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="#D9F3FF"
+        android:gravity="center"
+        android:layout_below="@id/txtC"
+        android:layout_marginTop="5dp"
+        android:text="D"
+        ></TextView>
+
+</RelativeLayout>
