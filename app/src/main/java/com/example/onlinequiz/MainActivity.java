@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Message;
 import com.example.onlinequiz.Model.User;
 import com.example.onlinequiz.ViewHolder.Activity;
 import com.google.firebase.database.DataSnapshot;
@@ -63,12 +64,14 @@ public class MainActivity extends Activity {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = edtUser.getText().toString();
-                if (username.trim() != "") {
-                    signIn(username, edtPassword.getText().toString());
-                } else {
-                    Toast.makeText(MainActivity.this, "Enter your username", Toast.LENGTH_SHORT).show();
-                }
+                if (internetConnectionAvailable()) {
+                    String username = edtUser.getText().toString();
+                    if (username.trim() != "")
+                        signIn(username, edtPassword.getText().toString());
+                    else
+                        Toast.makeText(MainActivity.this, Message.enterUsername, Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(MainActivity.this, Message.checkInternet, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -103,8 +106,8 @@ public class MainActivity extends Activity {
                             Intent homeActivity = new Intent(MainActivity.this, Home.class);
                             startActivity(homeActivity);
                             finish();
-                        } else msg = "Wrong Password!";
-                    } else msg = "User is not exists!";
+                        } else msg = Message.wrongPassword;
+                    } else msg = Message.userNotExist;
                     if (msg != "")
                         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                 }
@@ -112,7 +115,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Please check you internet connection!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, Message.checkInternet, Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -123,7 +126,7 @@ public class MainActivity extends Activity {
         if (testsSnapshot.exists()) {
             String testsJsonString = testsSnapshot.getValue().toString();
             Commom.currentUser.setTestManagerByJsonString(testsJsonString);
-        } else Toast.makeText(this, "Not tests", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "No tests data", Toast.LENGTH_SHORT).show();
     }
 
     private void saveLoggedUserInfo(String username, String password) {
@@ -132,14 +135,12 @@ public class MainActivity extends Activity {
         editor.putString("loggedUsername", username);
         editor.putString("loggedPassword", password);
         editor.apply();
-        //finish();
-
     }
 
     private void showSignUpDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         alertDialog.setTitle("Sign Up");
-        alertDialog.setMessage("Please fill full information");
+        alertDialog.setMessage(Message.fillForm);
         LayoutInflater inflater = this.getLayoutInflater();
         View sign_up_layout = inflater.inflate(R.layout.sign_up_layout, null);
         edtNewUser = (MaterialEditText) sign_up_layout.findViewById(R.id.edtNewUserName);
@@ -163,17 +164,15 @@ public class MainActivity extends Activity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.child(user.getUserName()).exists())
-                            Toast.makeText(MainActivity.this, "User already exists!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, Message.userAlreadyExist, Toast.LENGTH_SHORT).show();
                         else {
-                            users.child(user.getUserName())
-                                    .setValue(user);
-                            Toast.makeText(MainActivity.this, "User registration success!", Toast.LENGTH_SHORT).show();
+                            users.child(user.getUserName()).setValue(user.getDocData());
+                            Toast.makeText(MainActivity.this, Message.userRegistrationSuccess, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
                 dialog.dismiss();
@@ -194,5 +193,4 @@ public class MainActivity extends Activity {
         super.onBackPressed();
         finishAffinity();
     }
-
 }

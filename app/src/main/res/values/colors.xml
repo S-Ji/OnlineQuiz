@@ -10,5 +10,9 @@
     <color name="colorPrimary">#2d2f3c</color>
     <color name="colorPrimaryDark">#030516</color>
     <color name="colorAccent">#565866</color>
+    <color name="success">#28A745</color>
+    <color name="danger">#FF0033</color>
+    <color name="light">#F8F9FA</color>
+    <color name="correct_color">#2196F3</color>
 
 </resources>

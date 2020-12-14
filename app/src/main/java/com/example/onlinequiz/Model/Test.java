@@ -126,4 +126,12 @@ public class Test {
         }
     }
 
+    public ArrayList<String > getQuestionIdArrayList(){
+        ArrayList<String> ids = new ArrayList<>();
+        for (QuestionInTest questionInTest:getQuestions()){
+            ids.add(questionInTest.getQuestionId());
+        }
+        return ids;
+    }
+
 }

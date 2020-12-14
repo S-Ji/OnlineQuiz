@@ -9,59 +9,65 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinequiz.Common.Commom;
 import com.example.onlinequiz.Common.Helper;
+import com.example.onlinequiz.Common.ModelTag;
+import com.example.onlinequiz.Database.UserModel;
+import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
 import com.example.onlinequiz.Model.QuestionInTest;
 import com.example.onlinequiz.Model.RandomAnswerQuestion;
 import com.example.onlinequiz.Model.Test;
 import com.example.onlinequiz.Model.User;
+import com.example.onlinequiz.ViewHolder.Activity;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
-public class Playing extends AppCompatActivity implements View.OnClickListener {
+public class Playing extends Activity implements View.OnClickListener, ICallback<UserModel> {
 
-    final static long INTERVAL = 2000;
-    final static long TIMEOUT = 12000;
-    int progressValue = 0;
-
-    CountDownTimer mCountDown;
-    int index = 0, score = 0, thisQuestion = 0, totalQuestion, correctAnswer;
-
-    FirebaseDatabase database;
-    DatabaseReference users;
-    DatabaseReference questions;
-
+    RelativeLayout rltMain;
     ProgressBar progressBar;
     ImageView question_image;
     Button btnA, btnB, btnC, btnD;
     TextView txtScore, txtQuestionNum, question_text;
     MediaPlayer correctAnswerMp3;
     MediaPlayer wrongAnswerMp3;
+    final static long INTERVAL = 2000;
+    final static long TIMEOUT = 12000;
+    int progressValue = 0;
+    int index = 0, score = 0, thisQuestion = 0, correctAnswer;
+
+    CountDownTimer mCountDown;
+
     Test test;
     QuestionInTest questionInTest;
+    UserModel userModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
+        userModel = new UserModel(this);
         initTest();
-        database = FirebaseDatabase.getInstance();
-        questions = database.getReference("Questions");
-        users = database.getReference("Users");
         mapping();
         initEvents();
     }
@@ -88,7 +94,7 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         mCountDown.cancel();
         initMp3();
 
-        if (index < totalQuestion) {
+        if (index < getTotalQuestion()) {
             Button clickedButton = (Button) v;
             String userAnswer = clickedButton.getText().toString();
             questionInTest.setUserAnswer(userAnswer);
@@ -125,7 +131,7 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
 
     // SHOW QUESTION
     private void showQuestion(int index) {
-        if (index < totalQuestion) {
+        if (index < getTotalQuestion()) {
             thisQuestion++;
             displayQuestionNum();
             resetProgress();
@@ -150,9 +156,9 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         questionInTest.setAnswerOrder(randomAnswerQuestion.getRandomAnswerOrder());
     }
 
-    private void displayAnswerByLetter(String letter, String answer){
+    private void displayAnswerByLetter(String letter, String answer) {
         Button btn = null;
-        switch (letter){
+        switch (letter) {
             case "a":
                 btn = btnA;
                 break;
@@ -166,11 +172,11 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
                 btn = btnD;
                 break;
         }
-        if (btn!=null) btn.setText(answer);
+        if (btn != null) btn.setText(answer);
     }
 
     private void displayQuestionNum() {
-        txtQuestionNum.setText(String.format("%d / %d", thisQuestion, totalQuestion));
+        txtQuestionNum.setText(String.format("%d / %d", thisQuestion, getTotalQuestion()));
     }
 
     private void resetProgress() {
@@ -196,39 +202,31 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
 
     private void onDone() {
         test.setCategoryId(Commom.categoryId);
-        test.setNumberOfQuestion(totalQuestion);
+        test.setNumberOfQuestion(getTotalQuestion());
         test.setScore(score);
         test.setDate(Helper.getCurrentISODateString());
         Commom.getCurrentUser().getTestManager().add(test);
-        saveUser();
+        Commom.questionsList.clear();
+        userModel.updateCurrentUserTests(ModelTag.updateCurrentUserTests);
+
 
         Intent intent = new Intent(this, Done.class);
         Bundle dataSend = new Bundle();
         dataSend.putInt("SCORE", score);
-        dataSend.putInt("TOTAL", totalQuestion);
+        dataSend.putInt("TOTAL", getTotalQuestion());
         dataSend.putInt("CORRECTED", correctAnswer);
         intent.putExtras(dataSend);
         startActivity(intent);
         finish();
     }
 
-    private void saveUser() {
-        User currentUser = Commom.getCurrentUser();
-        users.child(currentUser.getUserName()).child("tests").setValue(currentUser.getTestManager().getSavingJsonString())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("xxx", "tests size" + Commom.getCurrentUser().getTestManager().getTestArrayList().size());
-                        Log.d("xxx", "tests updated: "+currentUser.getTestManager().getJsonArray().toString());
-                    }
-                });
-    }
-
-
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        totalQuestion = Commom.testQuestionQty;
+        startTest();
+    }
+
+    private void startTest() {
         mCountDown = new CountDownTimer(TIMEOUT, INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -251,6 +249,7 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         question_text = (TextView) findViewById(R.id.question_text);
         question_image = (ImageView) findViewById(R.id.question_image);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        rltMain = (RelativeLayout) findViewById(R.id.rltMain);
 
         btnA = (Button) findViewById(R.id.btnAnswerA);
         btnB = (Button) findViewById(R.id.btnAnswerB);
@@ -258,8 +257,19 @@ public class Playing extends AppCompatActivity implements View.OnClickListener {
         btnD = (Button) findViewById(R.id.btnAnswerD);
     }
 
+    private int getTotalQuestion() {
+        return Commom.testQuestionQty;
+    }
+
     // SUPPORTED METHOD
     private Question getCurrentQuestion() {
+        //return Commom.questionsList.get(index);
         return Commom.questionsList.get(index);
     }
+
+    @Override
+    public void itemCallBack(UserModel item, String tag) { }
+
+    @Override
+    public void listCallBack(ArrayList<UserModel> items, String tag) { }
 }

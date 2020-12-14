@@ -21,8 +21,6 @@ public class TestDetailActivity extends AppCompatActivity {
 
     ListView lvQuestion;
     TestQuestionAdapter questionAdapter;
-    ArrayList<QuestionInTest> questionArrayList;
-    Test test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,38 +32,27 @@ public class TestDetailActivity extends AppCompatActivity {
     }
 
     private void initListView() {
-        questionArrayList = test.getQuestions();
-        questionAdapter = new TestQuestionAdapter(this, R.layout.test_question_item_layout, questionArrayList);
+        questionAdapter = new TestQuestionAdapter(this, R.layout.test_question_item_layout, Commom.getTest().getQuestions());
         lvQuestion.setAdapter(questionAdapter);
-        /*
-        lvTest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(MyTestActivity.this, TestDetailActivity.class);
-                i.putExtra("testIndex", position);
-                startActivity(i);
+    }
+
+    private void setupTest() {
+        if (Commom.getTest() != null) {
+            try{
+                Toast.makeText(this, Commom.getTest().getQuestions().get(0).getQuestion().getQuestion(), Toast.LENGTH_SHORT).show();
+            }catch (Exception e){
+                exitAndToastErrMessage();
+                e.printStackTrace();
             }
-        });
-
-         */
+        } else exitAndToastErrMessage();
     }
 
-    private void setupTest(){
-        Intent i = getIntent();
-        int testIndex = i.getIntExtra("testIndex", -1);
-        if (testIndex >= 0){
-            test = Commom.getCurrentUser().getTestManager().getTestArrayList().get(testIndex);
-            test.loadQuestions();
-            Toast.makeText(this, "Score: "+test.getScore(), Toast.LENGTH_SHORT).show();
-        }else{
-            finish();
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
-        }
+    private void mapping() {
+        lvQuestion = (ListView) findViewById(R.id.lvQuestion);
     }
 
-    private void mapping(){
-        lvQuestion = (ListView)findViewById(R.id.lvQuestion);
+    private void exitAndToastErrMessage(){
+        finish();
+        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
     }
-
-
 }

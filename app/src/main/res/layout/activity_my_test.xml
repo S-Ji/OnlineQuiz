@@ -12,23 +12,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@color/black"
         android:gravity="center_horizontal"
         android:text="My Tests"
         android:textColor="@color/white"
-        android:background="@color/black"
         android:textSize="25sp"></TextView>
 
-    <ListView
-        android:id="@+id/lvTest"
+    <!-- MESSAGE -->
+    <RelativeLayout
+        android:id="@+id/rltMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <TextView
+            android:id="@+id/txtMessage"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="No test, yet!"
+            android:textColor="@color/white"
+            android:background="#17A2B8"
+            android:paddingVertical="5dp"
+            android:textSize="16sp"></TextView>
+    </RelativeLayout>
+
+    <!-- MAIN DATA -->
+    <RelativeLayout
+        android:id="@+id/rltMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/txtTitle"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="25.0sp"
-        android:layout_marginTop="25sp"
-        android:scrollbars="none"
-        android:layout_marginHorizontal="20dp"
-        ></ListView>
+        android:layout_marginTop="25sp">
 
+        <ListView
+            android:id="@+id/lvTest"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="25.0sp"
+            android:scrollbars="none"></ListView>
+
+    </RelativeLayout>
 
 </RelativeLayout>

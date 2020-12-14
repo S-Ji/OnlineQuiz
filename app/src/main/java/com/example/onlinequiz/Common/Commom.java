@@ -3,6 +3,7 @@ package com.example.onlinequiz.Common;
 import android.util.Log;
 
 import com.example.onlinequiz.Model.Question;
+import com.example.onlinequiz.Model.Test;
 import com.example.onlinequiz.Model.User;
 
 import java.util.ArrayList;
@@ -17,13 +18,27 @@ public class Commom {
     public static List<Question> questionsRight = new ArrayList<>();
     public static List<Question> questionsWrong = new ArrayList<>();
 
-    public static void shuffleQuestionList(){
+    // FOR TEST DETAIL
+    public static Test test;
+
+    public static void shuffleQuestionList() {
         Collections.shuffle(Commom.questionsList);
     }
+
     public static User getCurrentUser() {
         return currentUser;
     }
+
     public static void setCurrentUser(User currentUser) {
         Commom.currentUser = currentUser;
     }
+
+    public static Test getTest() {
+        return test;
+    }
+
+    public static void setTest(Test test) {
+        Commom.test = test;
+    }
+
 }

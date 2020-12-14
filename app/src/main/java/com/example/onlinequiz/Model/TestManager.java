@@ -63,8 +63,4 @@ public class TestManager {
     public ArrayList<Test> getTestArrayList() {
         return testArrayList;
     }
-
-    public void setTestArrayList(ArrayList<Test> testArrayList) {
-        this.testArrayList = testArrayList;
-    }
 }

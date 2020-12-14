@@ -69,4 +69,13 @@ public class User {
             e.printStackTrace();
         }
     }
+
+    public HashMap<String, Object> getDocData() {
+        HashMap<String, Object> docData = new HashMap<>();
+        docData.put("email", getEmail());
+        docData.put("passWord", getPassWord());
+        docData.put("tests", getTestManager().getSavingJsonString());
+        docData.put("userName", getUserName());
+        return docData;
+    }
 }
