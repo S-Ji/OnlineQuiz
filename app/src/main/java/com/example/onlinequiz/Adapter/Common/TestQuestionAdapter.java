@@ -129,6 +129,7 @@ public class TestQuestionAdapter extends BaseAdapter {
                 // default
                 Log.d("xxx", "default answer: " + answer);
                 txt.setBackground(ContextCompat.getDrawable(context, R.drawable.test_quetsion_answer_button));
+                txt.setTextColor(Color.parseColor("#757575"));
             }
             txt.setText(answer);
         }
