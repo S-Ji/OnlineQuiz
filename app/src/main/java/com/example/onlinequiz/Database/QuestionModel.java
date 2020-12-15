@@ -1,15 +1,15 @@
 package com.example.onlinequiz.Database;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.example.onlinequiz.Common.Commom;
 import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
-import com.example.onlinequiz.ViewHolder.Activity;
+import com.example.onlinequiz.Activity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -33,17 +33,24 @@ public class QuestionModel extends Model {
                         for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                             Question ques = postSnapshot.getValue(Question.class);
                             ques.setId(postSnapshot.getKey());
+                            setIsImageAnswer(postSnapshot, ques);
                             questionArrayList.add(ques);
-                            //Commom.questionsList.add(ques);
                         }
                         callback.listCallBack(questionArrayList, tag);
-                        // RANDOM LIST
-                        //Commom.shuffleQuestionList();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
+    }
+
+    private void setIsImageAnswer(DataSnapshot questionSnapshot, Question question) {
+        DataSnapshot isImageAnswerSnapshot = questionSnapshot.child("IsImageAnswer");
+        String isImageAnswer = "false";
+        if (isImageAnswerSnapshot.exists()) {
+            isImageAnswer = isImageAnswerSnapshot.getValue().toString();
+        }
+        question.setIsImageAnswer(isImageAnswer);
     }
 }

@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="Fragment.InternetStatusFragment">
+
+
+    <!-- CONNECTED -->
+    <TextView
+        android:id="@+id/txtConnected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back online"
+        android:textColor="@color/white"
+        android:background="@color/light_success"
+        android:gravity="center"
+        android:visibility="gone"
+        ></TextView>
+
+    <!-- NOT CONNECTED -->
+    <TextView
+        android:id="@+id/txtNotConnected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No connection"
+        android:textColor="@color/white"
+        android:background="@color/dark"
+        android:gravity="center"
+        android:visibility="gone"
+        ></TextView>
+
+</RelativeLayout>

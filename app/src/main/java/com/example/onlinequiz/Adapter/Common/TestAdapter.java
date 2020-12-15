@@ -47,33 +47,38 @@ public class TestAdapter extends BaseAdapter {
     }
 
 
-    class ViewHolder{
+    class ViewHolder {
         TextView txtCategory, txtScore, txtDate;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TestAdapter.ViewHolder holder;
-        if (convertView == null){
+        if (convertView == null) {
             holder = new TestAdapter.ViewHolder();
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(layout, null);
 
-            holder.txtCategory  = (TextView) convertView.findViewById(R.id.txtCategory);
-            holder.txtScore  = (TextView) convertView.findViewById(R.id.txtScore);
-            holder.txtDate  = (TextView) convertView.findViewById(R.id.txtDate);
+            holder.txtCategory = (TextView) convertView.findViewById(R.id.txtCategory);
+            holder.txtScore = (TextView) convertView.findViewById(R.id.txtScore);
+            holder.txtDate = (TextView) convertView.findViewById(R.id.txtDate);
             convertView.setTag(holder);
-        }else{
-            holder = (TestAdapter.ViewHolder) convertView.getTag();
-        }
-
+        } else holder = (TestAdapter.ViewHolder) convertView.getTag();
         Test test = testArrayList.get(position);
-        holder.txtCategory.setText(Question.getCategoryNameById(test.getCategoryId()));
-        holder.txtScore.setText(test.getScore()+"");
-        holder.txtDate.setText(Helper.getTestDate(test.getDate()));
+
+        //
+        String score = test.getScore() + "/" + (test.getNumberOfQuestion() * 10);
+        String category = Question.getCategoryNameById(test.getCategoryId());
+        String date = Helper.getTestDate(Helper.convertISODateStringToDate(test.getDate()));
+
+        //
+        holder.txtCategory.setText(category);
+        holder.txtScore.setText(score);
+        holder.txtDate.setText(date);
+
+        //
         Animation animScale = AnimationUtils.loadAnimation(context, R.anim.anim_scale_for_listview_item);
         convertView.startAnimation(animScale);
         return convertView;
     }
-
 }

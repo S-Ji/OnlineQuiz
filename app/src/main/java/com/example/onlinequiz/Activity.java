@@ -1,5 +1,7 @@
-package com.example.onlinequiz.ViewHolder;
+package com.example.onlinequiz;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.onlinequiz.Fragment.InternetStatusFragment;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
@@ -22,6 +26,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class Activity extends AppCompatActivity {
+    FragmentManager fragmentManager = getFragmentManager();
+    InternetStatusFragment internetStatusFragment;
+
     public SharedPreferences getSharedParams() {
         SharedPreferences sharedPreferences = getSharedPreferences("global-package", Context.MODE_PRIVATE);
         return sharedPreferences;
@@ -39,6 +46,7 @@ public class Activity extends AppCompatActivity {
         editor.apply();
     }
 
+    // INTERNET
     public boolean internetConnectionAvailable() {
         int timeOut = 3000;
         InetAddress inetAddress = null;
@@ -59,10 +67,10 @@ public class Activity extends AppCompatActivity {
         } catch (ExecutionException e) {
         } catch (TimeoutException e) {
         }
-        return inetAddress!=null && !inetAddress.equals("");
+        return inetAddress != null && !inetAddress.equals("");
     }
 
-    private BroadcastReceiver networkStateReceiver=new BroadcastReceiver() {
+    private BroadcastReceiver networkStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             doSomethingOnNetworkChange();
@@ -81,14 +89,22 @@ public class Activity extends AppCompatActivity {
         super.onPause();
     }
 
-    protected void doSomethingOnNetworkChange(){
-        /*
-        if (internetConnectionAvailable()){
-            Toast.makeText(this, "has internet", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "no internet", Toast.LENGTH_SHORT).show();
+    protected void doSomethingOnNetworkChange() {
+        if (internetStatusFragment != null) {
+            internetStatusFragment.onInternetStatusChange(internetConnectionAvailable());
         }
+    }
 
-         */
-    };
+    protected void initInternetStatusFragment() {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        internetStatusFragment = new InternetStatusFragment();
+        fragmentTransaction.replace(R.id.frameInternetStatus, internetStatusFragment, "internet-status");
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (internetStatusFragment != null) internetStatusFragment.setPristine(true);
+    }
 }

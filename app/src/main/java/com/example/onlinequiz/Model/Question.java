@@ -1,8 +1,20 @@
 package com.example.onlinequiz.Model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Question {
     private String id;
-    private String Question, A,B,C,D,CorrectAnswer,CategoryId,IsImageQuestion, IsImageAnswer;
+    private String Question;
+    private String A;
+    private String B;
+    private String C;
+    private String D;
+    private String CorrectAnswer;
+    private String CategoryId;
+    private String IsImageQuestion;
+
+    private String IsImageAnswer;
     private static String[] categoryArr = new String[]{"English Easy", "English Normal", "English Hard", "Memes", "Games"};
 
     public Question() {
@@ -91,8 +103,60 @@ public class Question {
         this.id = id;
     }
 
-    public static String getCategoryNameById(String categoryId){
-        int realId = Integer.parseInt(categoryId.substring(1)) -1;
+    public static String getCategoryNameById(String categoryId) {
+        int realId = Integer.parseInt(categoryId.substring(1)) - 1;
         return categoryArr[realId];
+    }
+
+    public String getIsImageAnswer() {
+        return IsImageAnswer;
+    }
+
+    public void setIsImageAnswer(String isImageAnswer) {
+        IsImageAnswer = isImageAnswer;
+    }
+
+    public String getAnswerByLetter(String letter) {
+        String result = null;
+        switch (letter) {
+            case "a":
+                result = getA();
+                break;
+            case "b":
+                result = getB();
+                break;
+            case "c":
+                result = getC();
+                break;
+            case "d":
+                result = getD();
+                break;
+        }
+        return result;
+    }
+
+    public static ArrayList<String> getDefaultAnswerOrder() {
+        ArrayList<String> result = new ArrayList<>();
+        result.add("a");
+        result.add("b");
+        result.add("c");
+        result.add("d");
+        return result;
+    }
+
+
+    public static int getLetterIndex(String letter) {
+        int index = getDefaultAnswerOrder().indexOf(letter);
+        return index;
+    }
+
+    public static String getLetter(int index) {
+        return getDefaultAnswerOrder().get(index);
+    }
+
+    public static ArrayList<String> genRandomAnswerOrder() {
+        ArrayList<String> result = getDefaultAnswerOrder();
+        Collections.shuffle(result);
+        return result;
     }
 }

@@ -13,9 +13,10 @@ public class QuestionInTest {
     private String userAnswer;
     private Question question;
 
-    public QuestionInTest(){}
+    public QuestionInTest() {
+    }
 
-    public QuestionInTest(JSONObject jsonObject){
+    public QuestionInTest(JSONObject jsonObject) {
         try {
             setQuestionId(jsonObject.getString("QuestionId"));
             setUserAnswer(jsonObject.getString("UserAnswer"));
@@ -29,16 +30,6 @@ public class QuestionInTest {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public QuestionInTest(String questionId, String answerOrder, String userAnswer){
-        this.setQuestionId(questionId);
-        //this.setAnswerOrder(answerOrder.split("\\|"));
-        this.setUserAnswer(userAnswer);
-    }
-
-    public void loadQuestion(){
-        Log.d("xxx", "load question");
     }
 
     public String getQuestionId() {
@@ -65,11 +56,11 @@ public class QuestionInTest {
         this.userAnswer = userAnswer;
     }
 
-    public String getInfo(){
-        return questionId+"; "+answerOrder+"; "+userAnswer;
+    public String getInfo() {
+        return questionId + "; " + answerOrder + "; " + userAnswer;
     }
 
-    public JSONObject getJsonObject(){
+    public JSONObject getJsonObject() {
         JSONObject obj = new JSONObject();
         try {
             obj.put("QuestionId", questionId);
@@ -81,9 +72,9 @@ public class QuestionInTest {
         return obj;
     }
 
-    private String getSavingAnswerOrder(){
+    private String getSavingAnswerOrder() {
         String divider = "|";
-        String result = answerOrder.get(0)+divider+answerOrder.get(1)+divider+answerOrder.get(2)+divider+answerOrder.get(3);
+        String result = answerOrder.get(0) + divider + answerOrder.get(1) + divider + answerOrder.get(2) + divider + answerOrder.get(3);
         return result;
     }
 

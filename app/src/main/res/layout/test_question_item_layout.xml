@@ -1,62 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="15dp">
 
-    <TextView
-        android:id="@+id/txtQuestion"
+    <!-- MESSAGE -->
+    <RelativeLayout
+        android:id="@+id/rltMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="5dp"
-        android:text="1. What is a part of human body?"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp"></TextView>
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/txtA"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/txtQuestion"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/test_quetsion_answer_button"
-        android:gravity="center"
-        android:text="A"
-        android:textColor="@color/colorPrimaryDark"></TextView>
+        <TextView
+            android:id="@+id/txtMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Failed to display question"
+            android:textSize="16sp"
+            android:textStyle="italic"></TextView>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/txtB"
+    <!-- MAIN -->
+    <RelativeLayout
+        android:id="@+id/rltMain"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/txtA"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/test_quetsion_answer_button"
-        android:gravity="center"
-        android:text="B"
-        android:textColor="@color/colorPrimaryDark"></TextView>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/txtC"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/txtB"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/test_quetsion_answer_button"
-        android:gravity="center"
-        android:text="C"
-        android:textColor="@color/colorPrimaryDark"></TextView>
+        <!-- STATUS IMAGE -->
+        <ImageView
+            android:id="@+id/imgStatus"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/incorrect"></ImageView>
 
-    <TextView
-        android:id="@+id/txtD"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/txtC"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/test_quetsion_answer_button"
-        android:gravity="center"
-        android:text="D"
-        android:textColor="@color/colorPrimaryDark"></TextView>
+        <RelativeLayout
+            android:id="@+id/rltQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgStatus">
+
+            <TextView
+                android:id="@+id/txtQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@color/white"
+                android:padding="5dp"
+                android:text="1. What is a part of human body?"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp"></TextView>
+
+            <ImageView
+                android:id="@+id/imgQuestion"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitCenter"
+                android:visibility="gone"></ImageView>
+        </RelativeLayout>
+
+
+        <!-- ANSWER CONTAINER -->
+        <LinearLayout
+            android:id="@+id/linearAnswerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rltQuestion"
+            android:orientation="vertical">
+
+            <!-- TEXT ANSWER -->
+            <RelativeLayout
+                android:id="@+id/textAnswerContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txtA"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/test_quetsion_answer_button"
+                    android:gravity="center"
+                    android:text="A"
+                    android:textColor="@color/colorPrimaryDark"></TextView>
+
+                <TextView
+                    android:id="@+id/txtB"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/txtA"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/test_quetsion_answer_button"
+                    android:gravity="center"
+                    android:text="B"
+                    android:textColor="@color/colorPrimaryDark"></TextView>
+
+                <TextView
+                    android:id="@+id/txtC"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/txtB"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/test_quetsion_answer_button"
+                    android:gravity="center"
+                    android:text="C"
+                    android:textColor="@color/colorPrimaryDark"></TextView>
+
+                <TextView
+                    android:id="@+id/txtD"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/txtC"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/test_quetsion_answer_button"
+                    android:gravity="center"
+                    android:text="D"
+                    android:textColor="@color/colorPrimaryDark"></TextView>
+            </RelativeLayout>
+
+            <include layout="@layout/picture_answer" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

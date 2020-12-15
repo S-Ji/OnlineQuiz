@@ -1,63 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:background="@color/white"
     android:padding="10dp">
 
     <RelativeLayout
         android:id="@+id/rltLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/txtScoreLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Score: "
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"></TextView>
-
-        <TextView
-            android:id="@+id/txtCategoryLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Category: "
-            android:layout_below="@id/txtScoreLabel"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"></TextView>
-        <TextView
-            android:id="@+id/txtDateLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test date: "
-            android:layout_below="@id/txtCategoryLabel"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"></TextView>
-    </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/rltRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/rltLeft"
-        android:layout_marginLeft="30dp"
-        >
+        android:layout_width="120dp"
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/txtScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="100"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="100/100"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"></TextView>
+            android:textSize="25sp"></TextView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rltRight"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/rltLeft"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/txtCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Easy"
-            android:layout_below="@id/txtScore"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"></TextView>
+            android:textSize="18sp"></TextView>
 
 
         <TextView
@@ -65,9 +43,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtCategory"
+            android:layout_marginTop="5dp"
             android:text="14/12/20120"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="16sp"></TextView>
+            android:textSize="18sp"></TextView>
     </RelativeLayout>
 
 

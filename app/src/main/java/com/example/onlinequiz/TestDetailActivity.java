@@ -12,12 +12,13 @@ import android.widget.Toast;
 import com.example.onlinequiz.Adapter.Common.TestAdapter;
 import com.example.onlinequiz.Adapter.Common.TestQuestionAdapter;
 import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Message;
 import com.example.onlinequiz.Model.QuestionInTest;
 import com.example.onlinequiz.Model.Test;
 
 import java.util.ArrayList;
 
-public class TestDetailActivity extends AppCompatActivity {
+public class TestDetailActivity extends Activity {
 
     ListView lvQuestion;
     TestQuestionAdapter questionAdapter;
@@ -26,9 +27,10 @@ public class TestDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_detail);
+        checkValidTest();
         mapping();
-        setupTest();
         initListView();
+        initInternetStatusFragment();
     }
 
     private void initListView() {
@@ -36,23 +38,20 @@ public class TestDetailActivity extends AppCompatActivity {
         lvQuestion.setAdapter(questionAdapter);
     }
 
-    private void setupTest() {
+    private void checkValidTest() {
+        boolean isValidTest = false;
         if (Commom.getTest() != null) {
-            try{
-                Toast.makeText(this, Commom.getTest().getQuestions().get(0).getQuestion().getQuestion(), Toast.LENGTH_SHORT).show();
-            }catch (Exception e){
-                exitAndToastErrMessage();
-                e.printStackTrace();
-            }
-        } else exitAndToastErrMessage();
+            if (Commom.getTest().getQuestions().size() > 0) isValidTest = true;
+        }
+        if (!isValidTest) exitAndToastErrMessage();
     }
 
     private void mapping() {
         lvQuestion = (ListView) findViewById(R.id.lvQuestion);
     }
 
-    private void exitAndToastErrMessage(){
+    private void exitAndToastErrMessage() {
         finish();
-        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Message.failedToDisplayTestDetail, Toast.LENGTH_SHORT).show();
     }
 }

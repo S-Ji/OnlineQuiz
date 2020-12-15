@@ -111,4 +111,7 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <!-- INTERNET STATUS FRAME -->
+    <include layout="@layout/frame_internet_status"/>
+
 </RelativeLayout>

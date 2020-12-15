@@ -1,5 +1,7 @@
 package com.example.onlinequiz.Model;
 
+import android.util.Log;
+
 import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
@@ -11,11 +13,12 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class TestManager {
-    private int max  =10 ;
+    private int max = 30;
     private ArrayList<Test> testArrayList = new ArrayList<>();
 
-    public TestManager(JSONArray jsonArray){
-        for (int i =0; i< jsonArray.length(); i++){
+    public TestManager(JSONArray jsonArray) {
+        int length = (jsonArray.length() < max) ? jsonArray.length() : max;
+        for (int i = 0; i < length; i++) {
             // Test
             try {
                 JSONObject testObject = jsonArray.getJSONObject(i);
@@ -27,9 +30,10 @@ public class TestManager {
         }
     }
 
-    public TestManager(){ }
+    public TestManager() {
+    }
 
-    public void sort(){
+    public void sort() {
         Collections.sort(testArrayList, new Comparator<Test>() {
             @Override
             public int compare(Test a, Test b) {
@@ -38,25 +42,25 @@ public class TestManager {
         });
     }
 
-    public void add(Test test){
-        testArrayList.add(0,test);
+    public void add(Test test) {
+        testArrayList.add(0, test);
         if (testArrayList.size() > max) remove(max);
     }
 
-    public void remove(int index){
+    public void remove(int index) {
         this.testArrayList.remove(index);
     }
 
-    public JSONArray getJsonArray(){
+    public JSONArray getJsonArray() {
         JSONArray jsonArray = new JSONArray();
-        for(Test test: testArrayList){
+        for (Test test : testArrayList) {
             jsonArray.put(test.getJsonObject());
         }
         return jsonArray;
     }
 
-    public String getSavingJsonString(){
-        String jsonString = "\""+getJsonArray().toString()+"\"";
+    public String getSavingJsonString() {
+        String jsonString = "\"" + getJsonArray().toString() + "\"";
         return jsonString;
     }
 

@@ -1,7 +1,5 @@
 package com.example.onlinequiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +16,6 @@ import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
 import com.example.onlinequiz.Model.QuestionInTest;
 import com.example.onlinequiz.Model.Test;
-import com.example.onlinequiz.ViewHolder.Activity;
 
 import java.util.ArrayList;
 
@@ -44,6 +41,7 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
             rltMessage.setVisibility(View.GONE);
             initListView();
         } else rltMain.setVisibility(View.GONE);
+        initInternetStatusFragment();
     }
 
     private void initListView() {
@@ -88,7 +86,6 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
     }
 
     private void onListItemCallback(ArrayList<Question> questionArrayList) {
-        Log.d("xxx", "test question: " + questionArrayList.size());
         ArrayList<String> questionIds = Commom.test.getQuestionIdArrayList();
         for (QuestionInTest questionInTest : Commom.getTest().getQuestions()) {
             questionInTest.setQuestion(getQuestionById(questionArrayList, questionInTest.getQuestionId()));

@@ -1,5 +1,7 @@
 package com.example.onlinequiz.Common;
 
+import android.util.Log;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,6 +11,35 @@ import java.util.TimeZone;
 
 public class Helper {
 
+    // TEST DATE STRING
+    public static String getTestDate(Date date) {
+        String result;
+
+        //
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        //
+        Date curDate = addHoursToJavaUtilDate(getCurrentUtcTime(), 7);
+        Calendar currentCal = Calendar.getInstance();
+        currentCal.setTime(curDate);
+
+        long time = cal.getTimeInMillis();
+        long currentTime = currentCal.getTimeInMillis();
+
+        long distance = currentTime - time;
+        long oneDayTime = 24 * 60 * 60 * 1000;
+        long twoDayTime = oneDayTime * 2;
+
+        if (distance < twoDayTime) {
+            String dayString = (distance < oneDayTime) ? "today" : "yesterday";
+            String hourAndMinute = getDateStringByFormat(date, "HH:mm");
+            result = hourAndMinute + " " + dayString;
+        } else result = getDateStringByFormat(date, "HH:mm dd/MM/yyy ");
+        return result;
+    }
+
+    //
     public static String getCurrentISODateString() {
         TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
@@ -29,14 +60,25 @@ public class Helper {
         }
     }
 
-    public static String getTestDate(String string) {
-        Date date = convertISODateStringToDate(string);
+    public static String getDateStringByFormat(Date date, String stringFormat) {
         if (date != null) {
-            DateFormat parseFormat = new SimpleDateFormat("HH:mm dd/MM/yyy ");
+            DateFormat parseFormat = new SimpleDateFormat(stringFormat);
             String stringDate = parseFormat.format(date);
             return stringDate;
         }
         return null;
+    }
+
+    private static Date getCurrentUtcTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        try {
+            return localDateFormat.parse(simpleDateFormat.format(new Date()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Date addHoursToJavaUtilDate(Date date, int hours) {
@@ -45,4 +87,5 @@ public class Helper {
         calendar.add(Calendar.HOUR_OF_DAY, hours);
         return calendar.getTime();
     }
+
 }

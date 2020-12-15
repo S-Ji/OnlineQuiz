@@ -3,28 +3,17 @@ package com.example.onlinequiz;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinequiz.Common.Commom;
 import com.example.onlinequiz.Common.ModelTag;
 import com.example.onlinequiz.Database.QuestionModel;
 import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
-import com.example.onlinequiz.ViewHolder.Activity;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Start extends Activity implements ICallback<Question> {
     Button btnPlay;
@@ -45,6 +34,7 @@ public class Start extends Activity implements ICallback<Question> {
         mapping();
         loadQuestion(Commom.categoryId);
         initEvents();
+        initInternetStatusFragment();
     }
 
     private void initEvents() {
@@ -91,7 +81,7 @@ public class Start extends Activity implements ICallback<Question> {
     }
 
     private void loadQuestion(String categoryId) {
-        questionModel.listItemsByCategoryId(categoryId, ModelTag.listTestQuestions);
+        questionModel.listItemsByCategoryId(categoryId, ModelTag.listQuestionsByCategoryIdForDisplayTestQuestions);
     }
 
     // CALLBACK
@@ -100,7 +90,7 @@ public class Start extends Activity implements ICallback<Question> {
     }
     @Override
     public void listCallBack(ArrayList<Question> items, String tag) {
-        if (tag.equals(ModelTag.listTestQuestions)) onTestQuestionsCallback(items);
+        if (tag.equals(ModelTag.listQuestionsByCategoryIdForDisplayTestQuestions)) onTestQuestionsCallback(items);
     }
 
     private void onTestQuestionsCallback(ArrayList<Question> questionArrayList) {

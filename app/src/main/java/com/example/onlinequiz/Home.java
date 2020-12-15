@@ -1,7 +1,6 @@
 package com.example.onlinequiz;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,12 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.onlinequiz.Common.Commom;
-import com.example.onlinequiz.ViewHolder.Activity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Home extends Activity {
@@ -51,6 +48,7 @@ public class Home extends Activity {
             }
         });
         setDefaultFragment();
+        initInternetStatusFragment();
     }
 
     private void setDefaultFragment() {
@@ -107,5 +105,20 @@ public class Home extends Activity {
         Commom.setCurrentUser(null);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount()> 0){
+            getFragmentManager().popBackStack();
+        }else{
+            super.onBackPressed();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
     }
 }

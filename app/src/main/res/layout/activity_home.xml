@@ -9,22 +9,27 @@
 
     <FrameLayout
         android:id="@+id/frame_layout"
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/navigation">
-    </FrameLayout>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
+        android:layout_above="@id/rltNav"
+        android:animateLayoutChanges="true"></FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rltNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        app:itemIconTint="@drawable/nav_item_color_state"
-        app:itemTextColor="@drawable/nav_item_color_state"
-        app:menu="@menu/bottom_menu"
-        >
+        android:layout_alignParentBottom="true">
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            app:itemIconTint="@drawable/nav_item_color_state"
+            app:itemTextColor="@drawable/nav_item_color_state"
+            app:menu="@menu/bottom_menu"></com.google.android.material.bottomnavigation.BottomNavigationView>
+    </RelativeLayout>
 
+    <!-- INTERNET STATUS FRAME -->
+    <include layout="@layout/frame_internet_status" />
 </RelativeLayout>

@@ -1,0 +1,74 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pictureAnswerContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true">
+
+    <!-- LINE 1-->
+    <LinearLayout
+        android:id="@+id/linearPictureAnswerLine1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <ImageView
+            android:id="@+id/imgA"
+            android:layout_width="0dp"
+            android:layout_height="125dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="5"
+            android:background="@drawable/quize_red"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_picture"></ImageView>
+
+        <ImageView
+            android:id="@+id/imgB"
+            android:layout_width="0dp"
+            android:layout_height="125dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="5"
+            android:background="@drawable/quize_blue"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_picture"></ImageView>
+
+    </LinearLayout>
+
+    <!-- LINE 2-->
+    <LinearLayout
+        android:id="@+id/linearPictureAnswerLine2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearPictureAnswerLine1"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <ImageView
+            android:id="@+id/imgC"
+            android:layout_width="0dp"
+            android:layout_height="125dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="5"
+            android:background="@drawable/quize_yellow"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_picture"></ImageView>
+
+        <ImageView
+            android:id="@+id/imgD"
+            android:layout_width="0dp"
+            android:layout_height="125dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="5"
+            android:background="@drawable/quize_green"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_picture"></ImageView>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -12,37 +12,36 @@
         android:layout_width="245dp"
         android:layout_height="151dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="104dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="104dp"
         android:src="@drawable/quiz_3644414_1280" />
 
     <RelativeLayout
         android:id="@+id/rltQuestionQty"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="#fff"
         android:layout_above="@id/cardBtnPlay"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:padding="10dp"
-        >
+        android:background="#fff"
+        android:padding="10dp">
+
         <TextView
             android:id="@+id/textQuestionQty"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:text=" Choose the number of questions:"
-            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
-            />
+            android:textSize="16sp" />
 
         <RadioGroup
             android:id="@+id/radioGroupQuestionQty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
             android:layout_below="@id/textQuestionQty"
             android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
             android:weightSum="3">
 
             <RadioButton
@@ -50,21 +49,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp"
                 android:checked="true"
-                android:textColor="@color/colorPrimaryDark"
                 android:text="5"
-                />
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
 
             <RadioButton
                 android:id="@+id/radio10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp"
-                android:textColor="@color/colorPrimaryDark"
                 android:text="10"
-                />
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
 
 
             <RadioButton
@@ -72,15 +69,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp"
-                android:textColor="@color/colorPrimaryDark"
                 android:text="15"
-                />
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="16sp" />
         </RadioGroup>
 
 
-
     </RelativeLayout>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardBtnPlay"
         android:layout_width="300dp"
@@ -90,6 +86,7 @@
         android:layout_marginBottom="100dp"
         android:background="#fff"
         app:cardElevation="4dp">
+
         <Button
             android:id="@+id/btnPlay"
             android:layout_width="match_parent"
@@ -103,9 +100,9 @@
             tools:targetApi="m">
 
         </Button>
-
-
     </androidx.cardview.widget.CardView>
 
+    <!-- INTERNET STATUS FRAME -->
+    <include layout="@layout/frame_internet_status" />
 
 </RelativeLayout>

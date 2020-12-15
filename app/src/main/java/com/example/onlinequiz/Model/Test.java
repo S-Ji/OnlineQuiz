@@ -119,13 +119,6 @@ public class Test {
         return obj;
     }
 
-    public void loadQuestions(){
-        Log.d("xxx", "load questions called");
-        for (QuestionInTest question:questionInTestArrayList){
-            question.loadQuestion();
-        }
-    }
-
     public ArrayList<String > getQuestionIdArrayList(){
         ArrayList<String> ids = new ArrayList<>();
         for (QuestionInTest questionInTest:getQuestions()){

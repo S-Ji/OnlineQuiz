@@ -12,7 +12,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class ScoreDetail extends AppCompatActivity {
+public class ScoreDetail extends Activity {
 
     FirebaseDatabase database;
     DatabaseReference question_score;
@@ -41,6 +41,7 @@ public class ScoreDetail extends AppCompatActivity {
             viewUser = getIntent().getStringExtra("viewUser");
         if(!viewUser.isEmpty())
             loadScoreDetail(viewUser);
+        initInternetStatusFragment();
     }
 
     private void loadScoreDetail(String viewUser) {

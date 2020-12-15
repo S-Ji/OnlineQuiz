@@ -1,20 +1,17 @@
 package com.example.onlinequiz;
 
 import android.content.Intent;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinequiz.Common.Commom;
 import com.example.onlinequiz.Common.Helper;
@@ -23,31 +20,19 @@ import com.example.onlinequiz.Database.UserModel;
 import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
 import com.example.onlinequiz.Model.QuestionInTest;
-import com.example.onlinequiz.Model.RandomAnswerQuestion;
 import com.example.onlinequiz.Model.Test;
-import com.example.onlinequiz.Model.User;
-import com.example.onlinequiz.ViewHolder.Activity;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
 
 public class Playing extends Activity implements View.OnClickListener, ICallback<UserModel> {
 
-    RelativeLayout rltMain;
+    RelativeLayout rltMain, pictureAnswerContainer;
+    LinearLayout textAnswerContainer;
     ProgressBar progressBar;
     ImageView question_image;
     Button btnA, btnB, btnC, btnD;
+    ImageView imgA, imgB, imgC, imgD;
     TextView txtScore, txtQuestionNum, question_text;
     MediaPlayer correctAnswerMp3;
     MediaPlayer wrongAnswerMp3;
@@ -70,6 +55,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         initTest();
         mapping();
         initEvents();
+        initInternetStatusFragment();
     }
 
     private void initTest() {
@@ -86,6 +72,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         btnB.setOnClickListener(this);
         btnC.setOnClickListener(this);
         btnD.setOnClickListener(this);
+
+        imgA.setOnClickListener(this);
+        imgB.setOnClickListener(this);
+        imgC.setOnClickListener(this);
+        imgD.setOnClickListener(this);
     }
 
     // ON ANSWER SELECTED
@@ -95,8 +86,20 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         initMp3();
 
         if (index < getTotalQuestion()) {
-            Button clickedButton = (Button) v;
-            String userAnswer = clickedButton.getText().toString();
+            String userAnswer;
+            if (getCurrentQuestion().getIsImageAnswer().equals("true")) {
+                ArrayList<Integer> idArrayList = new ArrayList<>();
+                idArrayList.add(R.id.imgA);
+                idArrayList.add(R.id.imgB);
+                idArrayList.add(R.id.imgC);
+                idArrayList.add(R.id.imgD);
+                int index = idArrayList.indexOf(v.getId());
+                String letter = questionInTest.getAnswerOrder().get(index);
+                userAnswer = getCurrentQuestion().getAnswerByLetter(letter);
+            } else {
+                Button clickedButton = (Button) v;
+                userAnswer = clickedButton.getText().toString();
+            }
             questionInTest.setUserAnswer(userAnswer);
             test.addQuestion(questionInTest);
             if (isCorrectAnswer(userAnswer)) onUserSelectCorrectAnswer();
@@ -128,7 +131,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         return (answer.trim().equals(getCurrentQuestion().getCorrectAnswer().trim()));
     }
 
-
     // SHOW QUESTION
     private void showQuestion(int index) {
         if (index < getTotalQuestion()) {
@@ -145,39 +147,82 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void displayAnswer() {
-        RandomAnswerQuestion randomAnswerQuestion = new RandomAnswerQuestion();
-        ArrayList<String> answerOrder = randomAnswerQuestion.getRandomAnswerOrder();
-        displayAnswerByLetter(answerOrder.get(0), getCurrentQuestion().getA());
-        displayAnswerByLetter(answerOrder.get(1), getCurrentQuestion().getB());
-        displayAnswerByLetter(answerOrder.get(2), getCurrentQuestion().getC());
-        displayAnswerByLetter(answerOrder.get(3), getCurrentQuestion().getD());
+        ArrayList<String> answerOrder = Question.genRandomAnswerOrder();
+        showAnswerContainerVisible();
+        if (getCurrentQuestion().getIsImageAnswer().equals("true")) {
+            // display picture answer
+            displayPictureAnswer(answerOrder);
+
+        } else {
+            // display text answer
+            displayTextAnswer(answerOrder);
+        }
+
         questionInTest = new QuestionInTest();
         questionInTest.setQuestionId(getCurrentQuestion().getId());
-        questionInTest.setAnswerOrder(randomAnswerQuestion.getRandomAnswerOrder());
+        questionInTest.setAnswerOrder(answerOrder);
     }
 
-    private void displayAnswerByLetter(String letter, String answer) {
-        Button btn = null;
-        switch (letter) {
-            case "a":
-                btn = btnA;
-                break;
-            case "b":
-                btn = btnB;
-                break;
-            case "c":
-                btn = btnC;
-                break;
-            case "d":
-                btn = btnD;
-                break;
+    private void showAnswerContainerVisible() {
+        if (getCurrentQuestion().getIsImageAnswer().equals("true")) {
+            pictureAnswerContainer.setVisibility(View.VISIBLE);
+            textAnswerContainer.setVisibility(View.GONE);
+        } else {
+            textAnswerContainer.setVisibility(View.VISIBLE);
+            pictureAnswerContainer.setVisibility(View.GONE);
         }
+    }
+
+    // TEXT ANSWER
+    private void displayTextAnswer(ArrayList<String> answerOrder) {
+        displayTextAnswerByLetter(answerOrder.get(0), getCurrentQuestion().getA());
+        displayTextAnswerByLetter(answerOrder.get(1), getCurrentQuestion().getB());
+        displayTextAnswerByLetter(answerOrder.get(2), getCurrentQuestion().getC());
+        displayTextAnswerByLetter(answerOrder.get(3), getCurrentQuestion().getD());
+    }
+
+    private Button getButtonByLetter(String letter) {
+        Button result = null;
+        Button[] buttonArr = new Button[]{btnA, btnB, btnC, btnD};
+        int index = Question.getLetterIndex(letter);
+        if (index >= 0) result = buttonArr[index];
+        return result;
+    }
+
+    private void displayTextAnswerByLetter(String letter, String answer) {
+        Button btn = getButtonByLetter(letter);
         if (btn != null) btn.setText(answer);
     }
 
     private void displayQuestionNum() {
         txtQuestionNum.setText(String.format("%d / %d", thisQuestion, getTotalQuestion()));
     }
+
+    // PICTURE ANSWER
+    private void displayPictureAnswer(ArrayList<String> answerOrder) {
+        displayPictureAnswerByLetter(answerOrder.get(0), getCurrentQuestion().getA());
+        displayPictureAnswerByLetter(answerOrder.get(1), getCurrentQuestion().getB());
+        displayPictureAnswerByLetter(answerOrder.get(2), getCurrentQuestion().getC());
+        displayPictureAnswerByLetter(answerOrder.get(3), getCurrentQuestion().getD());
+    }
+
+    private void displayPictureAnswerByLetter(String letter, String answer) {
+        ImageView img = getImageViewByLetter(letter);
+        if (img != null) {
+            Picasso.with(getBaseContext())
+                    .load(answer)
+                    .into(img);
+        }
+    }
+
+    private ImageView getImageViewByLetter(String letter) {
+        ImageView result = null;
+        ImageView[] imageViewArr = new ImageView[]{imgA, imgB, imgC, imgD};
+        int index = Question.getLetterIndex(letter);
+        if (index >= 0) result = imageViewArr[index];
+        return result;
+    }
+
 
     private void resetProgress() {
         progressBar.setProgress(0);
@@ -208,7 +253,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         Commom.getCurrentUser().getTestManager().add(test);
         Commom.questionsList.clear();
         userModel.updateCurrentUserTests(ModelTag.updateCurrentUserTests);
-
 
         Intent intent = new Intent(this, Done.class);
         Bundle dataSend = new Bundle();
@@ -244,6 +288,9 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void mapping() {
+        pictureAnswerContainer = (RelativeLayout) findViewById(R.id.pictureAnswerContainer);
+        textAnswerContainer = (LinearLayout) findViewById(R.id.textAnswerContainer);
+
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtQuestionNum = (TextView) findViewById(R.id.txtTotalQuestion);
         question_text = (TextView) findViewById(R.id.question_text);
@@ -255,6 +302,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         btnB = (Button) findViewById(R.id.btnAnswerB);
         btnC = (Button) findViewById(R.id.btnAnswerC);
         btnD = (Button) findViewById(R.id.btnAnswerD);
+
+        imgA = (ImageView) findViewById(R.id.imgA);
+        imgB = (ImageView) findViewById(R.id.imgB);
+        imgC = (ImageView) findViewById(R.id.imgC);
+        imgD = (ImageView) findViewById(R.id.imgD);
     }
 
     private int getTotalQuestion() {
@@ -268,8 +320,10 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     @Override
-    public void itemCallBack(UserModel item, String tag) { }
+    public void itemCallBack(UserModel item, String tag) {
+    }
 
     @Override
-    public void listCallBack(ArrayList<UserModel> items, String tag) { }
+    public void listCallBack(ArrayList<UserModel> items, String tag) {
+    }
 }

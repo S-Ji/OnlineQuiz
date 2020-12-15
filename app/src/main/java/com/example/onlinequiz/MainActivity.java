@@ -4,22 +4,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.onlinequiz.Common.Commom;
 import com.example.onlinequiz.Common.Message;
 import com.example.onlinequiz.Model.User;
-import com.example.onlinequiz.ViewHolder.Activity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +29,7 @@ public class MainActivity extends Activity {
     Button btnSignUp, btnSignIn;
     FirebaseDatabase database;
     DatabaseReference users;
+    boolean isLoadingUser = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +41,7 @@ public class MainActivity extends Activity {
         users = database.getReference("Users");
         checkAuth();
         initEvents();
+        initInternetStatusFragment();
     }
 
     private void initEvents() {
@@ -64,14 +62,16 @@ public class MainActivity extends Activity {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (internetConnectionAvailable()) {
-                    String username = edtUser.getText().toString();
-                    if (username.trim() != "")
-                        signIn(username, edtPassword.getText().toString());
-                    else
-                        Toast.makeText(MainActivity.this, Message.enterUsername, Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(MainActivity.this, Message.checkInternet, Toast.LENGTH_SHORT).show();
+                if (!isLoadingUser) {
+                    if (internetConnectionAvailable()) {
+                        String username = edtUser.getText().toString();
+                        if (username.trim() != "")
+                            signIn(username, edtPassword.getText().toString());
+                        else
+                            Toast.makeText(MainActivity.this, Message.enterUsername, Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(MainActivity.this, Message.checkInternet, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -90,27 +90,26 @@ public class MainActivity extends Activity {
     }
 
     private void signIn(String username, String pwd) {
+        isLoadingUser = true;
         users.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (Commom.getCurrentUser() == null) {
-                    String msg = "";
-                    if (snapshot.exists()) {
-                        User loggedUser = snapshot.getValue(User.class);
-                        if (loggedUser.getPassWord().equals(pwd)) {
-                            saveLoggedUserInfo(username, pwd);
-                            Commom.currentUser = loggedUser;
-                            setUserTests(snapshot);
+                String msg = "";
+                if (snapshot.exists()) {
+                    User loggedUser = snapshot.getValue(User.class);
+                    if (loggedUser.getPassWord().equals(pwd)) {
+                        saveLoggedUserInfo(username, pwd);
+                        Commom.currentUser = loggedUser;
+                        setUserTests(snapshot);
 
-                            // start home activity
-                            Intent homeActivity = new Intent(MainActivity.this, Home.class);
-                            startActivity(homeActivity);
-                            finish();
-                        } else msg = Message.wrongPassword;
-                    } else msg = Message.userNotExist;
-                    if (msg != "")
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                }
+                        // start home activity
+                        Intent homeActivity = new Intent(MainActivity.this, Home.class);
+                        startActivity(homeActivity);
+                        finish();
+                    } else msg = Message.wrongPassword;
+                } else msg = Message.userNotExist;
+                if (msg != "")
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -123,10 +122,10 @@ public class MainActivity extends Activity {
 
     private void setUserTests(DataSnapshot userSnapshot) {
         DataSnapshot testsSnapshot = userSnapshot.child("tests");
-        if (testsSnapshot.exists()) {
-            String testsJsonString = testsSnapshot.getValue().toString();
-            Commom.currentUser.setTestManagerByJsonString(testsJsonString);
-        } else Toast.makeText(this, "No tests data", Toast.LENGTH_SHORT).show();
+        String testsJsonString = (testsSnapshot.exists())
+                ? testsSnapshot.getValue().toString()
+                : "[]";
+        Commom.currentUser.setTestManagerByJsonString(testsJsonString);
     }
 
     private void saveLoggedUserInfo(String username, String password) {
@@ -192,5 +191,10 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
     }
 }

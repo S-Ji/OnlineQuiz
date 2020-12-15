@@ -9,14 +9,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineQuiz">
-        <activity android:name=".TestDetailActivity"></activity>
-        <activity android:name=".MyTestActivity" />
-        <activity android:name=".ScoreDetail" />
-        <activity android:name=".Done" />
-        <activity android:name=".Playing" />
-        <activity android:name=".Start" />
-        <activity android:name=".Home" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".TestDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".MyTestActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ScoreDetail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Done"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Playing"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Start"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Home"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

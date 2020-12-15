@@ -1,6 +1,6 @@
 package com.example.onlinequiz.Database;
 
-import com.example.onlinequiz.ViewHolder.Activity;
+import com.example.onlinequiz.Activity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 

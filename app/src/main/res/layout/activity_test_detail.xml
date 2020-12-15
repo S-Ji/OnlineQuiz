@@ -7,27 +7,36 @@
     android:background="@drawable/bg_app"
     tools:context=".TestDetailActivity">
 
-    <TextView
-        android:id="@+id/txtTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:text="Test Detail"
-        android:textColor="@color/white"
-        android:background="@color/black"
-        android:textSize="25sp"></TextView>
-
-    <ListView
-        android:id="@+id/lvQuestion"
+    <RelativeLayout
+        android:id="@+id/rltMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/txtTitle"
-        android:divider="@android:color/transparent"
-        android:layout_marginHorizontal="20dp"
-        android:dividerHeight="15.0sp"
-        android:layout_marginTop="15sp"
-        android:scrollbars="none"
-        ></ListView>
+        android:paddingHorizontal="20dp">
 
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/black"
+            android:gravity="center_horizontal"
+            android:text="Test Detail"
+            android:textColor="@color/white"
+            android:textSize="23sp"></TextView>
+
+        <ListView
+            android:id="@+id/lvQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/txtTitle"
+            android:layout_marginTop="10sp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="15.0sp"
+            android:scrollbars="none"></ListView>
+
+    </RelativeLayout>
+
+
+    <!-- INTERNET STATUS FRAME -->
+    <include layout="@layout/frame_internet_status" />
 </RelativeLayout>

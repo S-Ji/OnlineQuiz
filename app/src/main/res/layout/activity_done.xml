@@ -6,38 +6,44 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_app"
     tools:context=".Done">
+
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_margin="30dp"
-        android:padding="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:padding="20dp">
+
         <LinearLayout
-            android:orientation="vertical"
             android:id="@+id/btnGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/txtTotalScore"
-                android:text="SCORE : 0"
-                android:textSize="30sp"
-                android:textColor="@color/black"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="SCORE : 0"
+                android:textColor="@color/black"
+                android:textSize="30sp" />
+
             <TextView
                 android:id="@+id/txtTotalQuestion"
-                android:text="CORRECTED : 0 / 30"
-                android:textSize="30sp"
-                android:textColor="@color/black"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="CORRECTED : 0 / 30"
+                android:textColor="@color/black"
+                android:textSize="30sp" />
+
             <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:id="@+id/doneProgressBar"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
+
             <Button
                 android:id="@+id/btnTryAgain"
 
@@ -57,4 +63,6 @@
 
     </RelativeLayout>
 
+    <!-- INTERNET STATUS FRAME -->
+    <include layout="@layout/frame_internet_status" />
 </RelativeLayout>
