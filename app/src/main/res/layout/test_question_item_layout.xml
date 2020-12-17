@@ -27,6 +27,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- QUESTION ICON -->
+        <ImageView
+            android:id="@+id/imgQuestionIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"></ImageView>
+
         <!-- STATUS IMAGE -->
         <ImageView
             android:id="@+id/imgStatus"
@@ -68,26 +75,28 @@
                 android:id="@+id/speechQuestionContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp">
 
                 <ImageView
-                    android:id="@+id/imgMic"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/imgQuestionSpeaker"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginTop="10dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/black_mic"></ImageView>
+                    android:src="@drawable/speaker"></ImageView>
 
                 <TextView
                     android:id="@+id/txtSpeechQuestion"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/imgMic"
-                    android:text="This is speech question"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/imgQuestionSpeaker"
+                    android:text="This is speech question This is speech question This is speech question "
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp"></TextView>
+
             </RelativeLayout>
         </RelativeLayout>
 
@@ -158,12 +167,24 @@
             <RelativeLayout
                 android:id="@+id/speechAnswerContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp">
+
+                <ImageView
+                    android:id="@+id/imgAnswerSpeaker"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitCenter"
+                    ></ImageView>
 
                 <TextView
                     android:id="@+id/txtSpeechAnswer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/imgAnswerSpeaker"
                     android:text="This is my speech answer"
                     android:textColor="@color/light_success"
                     android:textSize="16sp"></TextView>

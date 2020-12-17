@@ -86,4 +86,20 @@ public class Helper {
         return calendar.getTime();
     }
 
+    public static String ucFirst(String string) {
+        String result = null;
+        if (string != null) {
+            result = string.substring(0, 1).toUpperCase() + string.substring(1);
+        }
+        return result;
+    }
+
+    public static String getPureString(String string) {
+        String result = null;
+        if (string != null) {
+            result = string.replaceAll("[^\\w\\s]", "").toLowerCase().trim();
+        }
+        return result;
+    }
+
 }

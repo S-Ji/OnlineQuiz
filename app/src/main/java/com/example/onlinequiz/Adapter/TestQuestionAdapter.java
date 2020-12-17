@@ -3,6 +3,8 @@ package com.example.onlinequiz.Adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +12,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.onlinequiz.Common.Helper;
 import com.example.onlinequiz.Common.Message;
 import com.example.onlinequiz.Model.Question;
 import com.example.onlinequiz.Model.QuestionInTest;
@@ -20,16 +24,19 @@ import com.example.onlinequiz.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class TestQuestionAdapter extends BaseAdapter {
+    private TextToSpeech tts;
     private Context context;
     private int layout;
     private ArrayList<QuestionInTest> questionInTestArrayList;
 
-    public TestQuestionAdapter(Context context, int layout, ArrayList<QuestionInTest> questionInTestArrayList) {
+    public TestQuestionAdapter(Context context, int layout, ArrayList<QuestionInTest> questionInTestArrayList, TextToSpeech tts) {
         this.context = context;
         this.layout = layout;
         this.questionInTestArrayList = questionInTestArrayList;
+        this.tts = tts;
     }
 
     @Override
@@ -50,7 +57,7 @@ public class TestQuestionAdapter extends BaseAdapter {
     class ViewHolder {
         RelativeLayout rltMessage, rltMain, textAnswerContainer, pictureAnswerContainer, speechAnswerContainer, speechQuestionContainer;
         TextView txtQuestion, txtA, txtB, txtC, txtD, txtMessage, txtSpeechQuestion, txtSpeechAnswer;
-        ImageView imgA, imgB, imgC, imgD, imgStatus, imgQuestion;
+        ImageView imgA, imgB, imgC, imgD, imgStatus, imgQuestion, imgQuestionIcon, imgQuestionSpeaker;
 
     }
 
@@ -89,6 +96,7 @@ public class TestQuestionAdapter extends BaseAdapter {
         return convertView;
     }
 
+
     private boolean isCorrect(QuestionInTest questionInTest) {
         boolean result;
         Question question = questionInTest.getQuestion();
@@ -103,18 +111,39 @@ public class TestQuestionAdapter extends BaseAdapter {
 
     // DISPLAY QUESTION
     private void displayQuestion(int index, QuestionInTest questionInTest, ViewHolder holder) {
+        //displayQuestionIcon(questionInTest, holder);
         Question question = questionInTest.getQuestion();
         if (question.getIsImageQuestion().equals("true")) {
             Picasso.with(context)
                     .load(question.getQuestion())
                     .into(holder.imgQuestion);
         } else if (question.getIsSpeechQuestion().equals("true")) {
+            initOnSpeakerClickEvents(questionInTest, holder);
             holder.txtSpeechQuestion.setText(question.getQuestion());
         } else {
             String questionString = (index + 1) + ". " + questionInTest.getQuestion().getQuestion();
             holder.txtQuestion.setText(questionString);
         }
         solveQuestionVisibility(question, holder);
+    }
+
+    private void initOnSpeakerClickEvents(QuestionInTest questionInTest, ViewHolder holder) {
+        holder.imgQuestionSpeaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int speechStatus = tts.speak(questionInTest.getQuestion().getQuestion(), TextToSpeech.QUEUE_FLUSH, null);
+                if (speechStatus == TextToSpeech.ERROR) {
+                    Log.e("TTS", "Error in converting Text to Speech!");
+                }
+            }
+        });
+    }
+
+    private void displayQuestionIcon(QuestionInTest questionInTest, ViewHolder holder) {
+        if (questionInTest.getQuestion().getIsSpeechQuestion().equals("true"))
+            holder.imgQuestionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.black_mic));
+        else
+            holder.imgQuestionIcon.setImageDrawable(null);
     }
 
     private void solveQuestionVisibility(Question question, ViewHolder holder) {
@@ -147,8 +176,7 @@ public class TestQuestionAdapter extends BaseAdapter {
 
     // SPEECH
     private void displaySpeechAnswer(QuestionInTest questionInTest, ViewHolder holder) {
-        Question question = questionInTest.getQuestion();
-        holder.txtSpeechAnswer.setText(questionInTest.getUserAnswer());
+        holder.txtSpeechAnswer.setText(Helper.ucFirst(questionInTest.getUserAnswer()));
         // format
         if (questionInTest.isSpeechQuestionCorrect()) {
             // correct
@@ -277,6 +305,8 @@ public class TestQuestionAdapter extends BaseAdapter {
         holder.imgD = (ImageView) v.findViewById(R.id.imgD);
         holder.imgStatus = (ImageView) v.findViewById(R.id.imgStatus);
         holder.imgQuestion = (ImageView) v.findViewById(R.id.imgQuestion);
+        holder.imgQuestionIcon = (ImageView) v.findViewById(R.id.imgQuestionIcon);
+        holder.imgQuestionSpeaker = (ImageView) v.findViewById(R.id.imgQuestionSpeaker);
 
         holder.txtSpeechQuestion = (TextView) v.findViewById(R.id.txtSpeechQuestion);
         holder.txtSpeechAnswer = (TextView) v.findViewById(R.id.txtSpeechAnswer);

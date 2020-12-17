@@ -90,7 +90,7 @@ public class Done extends Activity {
         initInternetStatusFragment();
     }
 
-    private void mapping(){
+    private void mapping() {
         txtResultScore = (TextView) findViewById(R.id.txtTotalScore);
         getTxtResultQuestion = (TextView) findViewById(R.id.txtTotalQuestion);
         progressBar = (ProgressBar) findViewById(R.id.doneProgressBar);

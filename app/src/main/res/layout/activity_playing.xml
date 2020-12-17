@@ -32,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
             android:gravity="center"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="25dp"
             android:visibility="invisible" />
 
@@ -48,10 +48,11 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="25dp"
-                android:gravity="center"
-                android:text="Speak:"
-                android:textColor="@color/teal_700"
-                android:textSize="25dp" />
+                android:gravity="left"
+                android:text="Speak this sentence"
+                android:textColor="#3F51B5"
+                android:textSize="25dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtSpeechQuestion"
@@ -62,7 +63,7 @@
                 android:layout_marginTop="25dp"
                 android:gravity="center"
                 android:text="How many people are there in your family?"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="25dp" />
         </RelativeLayout>
 
@@ -147,7 +148,7 @@
 
 
                     android:text="Answer A"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
                     android:theme="@style/MyButton" />
 
@@ -159,7 +160,7 @@
                     android:backgroundTint="#72FF0D"
                     android:text="Answer B"
 
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorPrimaryDark"
 
                     android:textStyle="bold"
                     android:theme="@style/MyButton" />
@@ -172,7 +173,7 @@
                     android:backgroundTint="#72FF0D"
 
                     android:text="Answer C"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorPrimaryDark"
 
                     android:textStyle="bold"
                     android:theme="@style/MyButton" />
@@ -185,7 +186,7 @@
                     android:backgroundTint="#72FF0D"
 
                     android:text="Answer D"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorPrimaryDark"
 
                     android:textStyle="bold"
                     android:theme="@style/MyButton" />

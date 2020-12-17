@@ -69,8 +69,7 @@ public class VoiceFragment extends MyFragment {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    speechRecognizer.stopListening();
-                    micButton.setImageResource(R.drawable.black_mic);
+                    onStopListening();
                 }
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     micButton.setImageResource(R.drawable.blue_mic);
@@ -79,6 +78,11 @@ public class VoiceFragment extends MyFragment {
                 return false;
             }
         });
+    }
+
+    public void  onStopListening(){
+        speechRecognizer.stopListening();
+        micButton.setImageResource(R.drawable.black_mic);
     }
 
     private void initRecognitionListener() {

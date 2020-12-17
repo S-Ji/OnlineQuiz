@@ -46,6 +46,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     TextView txtScore, txtQuestionNum, question_text, txtSpeechQuestion;
     MediaPlayer correctAnswerMp3;
     MediaPlayer wrongAnswerMp3;
+    MediaPlayer backgroundMp3;
     final static long INTERVAL = 100;
     final static long TIMEOUT = 12000;
     int progressValue = 0;
@@ -69,6 +70,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         initEvents();
         initInternetStatusFragment();
         initVoiceAnswerFragment();
+
+        // start background music
+        //backgroundMp3 = MediaPlayer.create(this, R.raw.spongebob);
+        backgroundMp3 = MediaPlayer.create(this, R.raw.wii);
+        backgroundMp3.start();
     }
 
     private void initVoiceAnswerFragment() {
@@ -83,10 +89,23 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         test = new Test();
     }
 
+    // MEDIA PLAYER
     private void initMp3() {
         correctAnswerMp3 = MediaPlayer.create(this, R.raw.correct);
         wrongAnswerMp3 = MediaPlayer.create(this, R.raw.wrong);
     }
+
+    private void playCorrectSound() {
+        initMp3();
+        correctAnswerMp3.start();
+    }
+
+    private void playIncorrectSound() {
+        initMp3();
+        wrongAnswerMp3.start();
+    }
+    //
+
 
     private void initEvents() {
         btnA.setOnClickListener(this);
@@ -120,8 +139,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     @Override
     public void onClick(View v) {
         mCountDown.cancel();
-        initMp3();
-
         if (index < getTotalQuestion()) {
             String userAnswer;
 
@@ -147,13 +164,13 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         questionInTest.setUserAnswer(userAnswer);
         test.addQuestion(questionInTest);
         if (isCorrectAnswer(questionInTest.getUserAnswer())) {
-            wrongAnswerMp3.pause();
-            correctAnswerMp3.start();
+            playCorrectSound();
             score += 10;
             correctAnswer++;
+            Log.d("xxx", "correct");
         } else {
-            correctAnswerMp3.pause();
-            wrongAnswerMp3.start();
+            Log.d("xxx", "wrong");
+            playIncorrectSound();
         }
         showNextQuestion();
         displayScore();
@@ -177,6 +194,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     private void showQuestion(int index) {
         if (index < getTotalQuestion()) {
             thisQuestion++;
+            solveBackgroundMusic();
             displayQuestionNum();
             resetProgress();
             displayQuestion();
@@ -187,6 +205,14 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             //if (!getCurrentQuestion().getIsSpeechQuestion().equals("true")) mCountDown.start();
             mCountDown.start();
         } else onDone();
+    }
+
+    private void solveBackgroundMusic() {
+        if (getCurrentQuestion().getIsSpeechQuestion().equals("true")) {
+            if (backgroundMp3.isPlaying()) backgroundMp3.pause();
+        } else {
+            if (!backgroundMp3.isPlaying()) backgroundMp3.start();
+        }
     }
 
     private void displayAnswer() {
@@ -328,6 +354,9 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void solveTimeout() {
+        playIncorrectSound();
+        if (getCurrentQuestion().getIsSpeechQuestion().equals("true"))
+            voiceFragment.onStopListening();
         questionInTest.setUserAnswer("");
         test.addQuestion(questionInTest);
         showNextQuestion();
@@ -382,6 +411,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     public void communicate(String value, String tag) {
         if (tag.equals(VoiceFragment.fragmentTag)) {
             String userAnswer = value;
+            mCountDown.cancel();
             solveAnswerSelected(userAnswer);
         }
     }
@@ -394,8 +424,15 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mCountDown.cancel();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("xxx", "destroy");
+        mCountDown.cancel();
+        backgroundMp3.stop();
     }
 
 }

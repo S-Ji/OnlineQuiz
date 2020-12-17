@@ -2,6 +2,8 @@ package com.example.onlinequiz.Model;
 
 import android.util.Log;
 
+import com.example.onlinequiz.Common.Helper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -92,15 +94,11 @@ public class QuestionInTest {
     }
 
     public static boolean isSpeechQuestionCorrect(Question question, String userAnswer) {
-        boolean result = false;
-        try {
-            String correctAnswer = question.getQuestion();
-            correctAnswer = correctAnswer.replaceAll("[^\\w\\s]", "").toLowerCase().trim();
-            userAnswer = userAnswer.toLowerCase().trim();
-            result = userAnswer.equals(correctAnswer);
-            Log.d("xxx", "speech user answer" + userAnswer);
-        } catch (Exception e) {
-        }
+        boolean result;
+        String correctAnswer = Helper.getPureString(question.getQuestion());
+        userAnswer = userAnswer.toLowerCase().trim();
+        result = userAnswer.equals(correctAnswer);
+        Log.d("xxx", "speech user answer" + userAnswer);
         return result;
     }
 }
