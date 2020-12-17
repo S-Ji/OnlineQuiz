@@ -36,6 +36,36 @@
             android:textSize="25dp"
             android:visibility="invisible" />
 
+        <RelativeLayout
+            android:id="@+id/rltQuestionSpeech"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtSpeechLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:text="Speak:"
+                android:textColor="@color/teal_700"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/txtSpeechQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtSpeechLabel"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:text="How many people are there in your family?"
+                android:textColor="@color/colorPrimary"
+                android:textSize="25dp" />
+        </RelativeLayout>
+
         <!-- STATUS BAR -->
         <RelativeLayout
             android:id="@+id/rltStatusBar"
@@ -75,15 +105,17 @@
 
             </LinearLayout>
 
-            <androidx.core.widget.ContentLoadingProgressBar
+            <ProgressBar
                 android:id="@+id/progressBar"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="10dp"
                 android:layout_below="@id/linearScore"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:max="5" />
+                android:max="12000"
+                android:progress="6000"
+                android:progressDrawable="@drawable/test_progressbar" />
 
         </RelativeLayout>
 
@@ -161,6 +193,29 @@
 
             <!-- PICTURE ANSWER -->
             <include layout="@layout/picture_answer" />
+
+            <!-- VOICE ANSWER -->
+            <RelativeLayout
+                android:id="@+id/rltVoiceAnswerContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:id="@+id/frameVoiceAnswer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></FrameLayout>
+
+                <Button
+                    android:id="@+id/btnNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/frameVoiceAnswer"
+                    android:layout_alignParentRight="true"
+                    android:text="Next"
+                    android:textAllCaps="false"></Button>
+            </RelativeLayout>
+
 
         </LinearLayout>
 

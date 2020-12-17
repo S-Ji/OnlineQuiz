@@ -8,9 +8,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Model.QuestionScore;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -78,14 +76,14 @@ public class Done extends Activity {
             progressBar.setProgress(correctAnswer);
 
             //upload point each user to firebase
-            question_score.child(String.format("%s_%s", Commom.currentUser.getUserName(),
-                    Commom.categoryId))
-                    .setValue(new QuestionScore(String.format("%s_%s", Commom.currentUser.getUserName(),
-                            Commom.categoryId),
-                            Commom.currentUser.getUserName(),
+            question_score.child(String.format("%s_%s", Common.currentUser.getUserName(),
+                    Common.categoryId))
+                    .setValue(new QuestionScore(String.format("%s_%s", Common.currentUser.getUserName(),
+                            Common.categoryId),
+                            Common.currentUser.getUserName(),
                             String.valueOf(score),
-                            Commom.categoryId,
-                            Commom.categoryName));
+                            Common.categoryId,
+                            Common.categoryName));
 
 
         }

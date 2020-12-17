@@ -36,6 +36,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/incorrect"></ImageView>
 
+        <!-- QUESTION -->
         <RelativeLayout
             android:id="@+id/rltQuestion"
             android:layout_width="match_parent"
@@ -51,7 +52,8 @@
                 android:padding="5dp"
                 android:text="1. What is a part of human body?"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"></TextView>
+                android:textSize="16sp"
+                android:visibility="gone"></TextView>
 
             <ImageView
                 android:id="@+id/imgQuestion"
@@ -61,8 +63,33 @@
                 android:layout_marginTop="10dp"
                 android:scaleType="fitCenter"
                 android:visibility="gone"></ImageView>
-        </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/speechQuestionContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/imgMic"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/black_mic"></ImageView>
+
+                <TextView
+                    android:id="@+id/txtSpeechQuestion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/imgMic"
+                    android:text="This is speech question"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"></TextView>
+            </RelativeLayout>
+        </RelativeLayout>
 
         <!-- ANSWER CONTAINER -->
         <LinearLayout
@@ -123,7 +150,25 @@
                     android:textColor="@color/colorPrimaryDark"></TextView>
             </RelativeLayout>
 
+            <!-- PICTURE ANSWER-->
+
             <include layout="@layout/picture_answer" />
+
+            <!-- SPEECH ANSWER -->
+            <RelativeLayout
+                android:id="@+id/speechAnswerContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtSpeechAnswer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="This is my speech answer"
+                    android:textColor="@color/light_success"
+                    android:textSize="16sp"></TextView>
+            </RelativeLayout>
+
 
         </LinearLayout>
 

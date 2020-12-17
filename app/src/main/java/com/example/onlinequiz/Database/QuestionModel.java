@@ -1,10 +1,7 @@
 package com.example.onlinequiz.Database;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
-import com.example.onlinequiz.Common.Commom;
 import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
 import com.example.onlinequiz.Activity;
@@ -34,6 +31,7 @@ public class QuestionModel extends Model {
                             Question ques = postSnapshot.getValue(Question.class);
                             ques.setId(postSnapshot.getKey());
                             setIsImageAnswer(postSnapshot, ques);
+                            setIsSpeechQuestion(postSnapshot, ques);
                             questionArrayList.add(ques);
                         }
                         callback.listCallBack(questionArrayList, tag);
@@ -52,5 +50,14 @@ public class QuestionModel extends Model {
             isImageAnswer = isImageAnswerSnapshot.getValue().toString();
         }
         question.setIsImageAnswer(isImageAnswer);
+    }
+
+    private void setIsSpeechQuestion(DataSnapshot questionSnapshot, Question question) {
+        DataSnapshot isSpeechQuestionSnapshot = questionSnapshot.child("IsSpeechQuestion");
+        String isSpeechQuestion = "false";
+        if (isSpeechQuestionSnapshot.exists()) {
+            isSpeechQuestion = isSpeechQuestionSnapshot.getValue().toString();
+        }
+        question.setIsSpeechQuestion(isSpeechQuestion);
     }
 }

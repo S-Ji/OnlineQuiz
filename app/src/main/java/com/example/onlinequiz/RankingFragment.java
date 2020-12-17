@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Interface.ItemClickListener;
 import com.example.onlinequiz.Interface.RankingCallBack;
 import com.example.onlinequiz.Model.QuestionScore;
@@ -63,7 +63,7 @@ public class RankingFragment extends Fragment {
         rankingList.setLayoutManager(layoutManager);
 
 
-        updateScore(Commom.currentUser.getUserName(), new RankingCallBack<Ranking>() {
+        updateScore(Common.currentUser.getUserName(), new RankingCallBack<Ranking>() {
             @Override
             public void callBack(Ranking ranking) {
                 //upload ranking table

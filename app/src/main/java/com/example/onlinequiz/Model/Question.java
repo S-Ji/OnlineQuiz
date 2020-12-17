@@ -1,5 +1,7 @@
 package com.example.onlinequiz.Model;
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -13,12 +15,13 @@ public class Question {
     private String CorrectAnswer;
     private String CategoryId;
     private String IsImageQuestion;
+    private String IsSpeechQuestion;
+
 
     private String IsImageAnswer;
-    private static String[] categoryArr = new String[]{"English Easy", "English Normal", "English Hard", "Memes", "Games"};
+    private static String[] categoryArr = new String[]{"English Easy", "English Normal", "English Hard", "Memes", "Games", "English Speech"};
 
-    public Question() {
-    }
+    public Question(){}
 
     public Question(String question, String a, String b, String c, String d, String correctAnswer, String categoryId, String isImageQuestion) {
         Question = question;
@@ -144,11 +147,11 @@ public class Question {
         return result;
     }
 
-
     public static int getLetterIndex(String letter) {
         int index = getDefaultAnswerOrder().indexOf(letter);
         return index;
     }
+
 
     public static String getLetter(int index) {
         return getDefaultAnswerOrder().get(index);
@@ -158,5 +161,13 @@ public class Question {
         ArrayList<String> result = getDefaultAnswerOrder();
         Collections.shuffle(result);
         return result;
+    }
+
+    public String getIsSpeechQuestion() {
+        return IsSpeechQuestion;
+    }
+
+    public void setIsSpeechQuestion(String isSpeechQuestion) {
+        IsSpeechQuestion = isSpeechQuestion;
     }
 }

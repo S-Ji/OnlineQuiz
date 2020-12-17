@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
-import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Common.ModelTag;
 import com.example.onlinequiz.Database.QuestionModel;
 import com.example.onlinequiz.Interface.ICallback;
@@ -32,7 +32,7 @@ public class Start extends Activity implements ICallback<Question> {
 
         questionModel = new QuestionModel(this);
         mapping();
-        loadQuestion(Commom.categoryId);
+        loadQuestion(Common.categoryId);
         initEvents();
         initInternetStatusFragment();
     }
@@ -72,7 +72,7 @@ public class Start extends Activity implements ICallback<Question> {
     }
 
     private void setTestQuestionQty(){
-        Commom.testQuestionQty = (questionQty <= Commom.questionsList.size()) ? questionQty : Commom.questionsList.size();
+        Common.testQuestionQty = (questionQty <= Common.questionsList.size()) ? questionQty : Common.questionsList.size();
     }
 
     private void mapping() {
@@ -94,9 +94,9 @@ public class Start extends Activity implements ICallback<Question> {
     }
 
     private void onTestQuestionsCallback(ArrayList<Question> questionArrayList) {
-        Commom.questionsList.clear();
-        Commom.questionsList.addAll(questionArrayList);
-        Commom.shuffleQuestionList();
+        Common.questionsList.clear();
+        Common.questionsList.addAll(questionArrayList);
+        Common.shuffleQuestionList();
         isDataLoaded = true;
         if (isStartClicked) play();
     }

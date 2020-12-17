@@ -9,16 +9,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.onlinequiz.R;
 
-public class InternetStatusFragment extends Fragment {
+public class InternetStatusFragment extends MyFragment {
 
     TextView txtConnected, txtNotConnected;
     View v;
-    boolean isPristine = true;
-    boolean prevStatus = false;
+    boolean isPristine = true;    boolean prevStatus = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,7 +65,7 @@ public class InternetStatusFragment extends Fragment {
         v.startAnimation(animScale);
     }
 
-    public void setPristine(boolean value){
+    public void setPristine(boolean value) {
         isPristine = value;
     }
 }

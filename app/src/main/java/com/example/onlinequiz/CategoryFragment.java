@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Interface.ItemClickListener;
 import com.example.onlinequiz.Model.Category;
 import com.example.onlinequiz.ViewHolder.CategoryViewHolder;
@@ -76,8 +76,8 @@ public class CategoryFragment extends Fragment {
                     public void onClick(View view, int position, boolean isLongClick) {
                         //Toast.makeText(getActivity(),String.format("%s|%s",adapter.getRef(position).getKey(),model.getName()),Toast.LENGTH_SHORT).show();
                         Intent startGame = new Intent(getActivity(),Start.class);
-                        Commom.categoryId = adapter.getRef(position).getKey();
-                        Commom.categoryName = model.getName();
+                        Common.categoryId = adapter.getRef(position).getKey();
+                        Common.categoryName = model.getName();
                         startActivity(startGame);
                     }
                 });

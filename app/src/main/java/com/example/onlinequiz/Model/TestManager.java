@@ -33,11 +33,20 @@ public class TestManager {
     public TestManager() {
     }
 
-    public void sort() {
+    public void sortByDate() {
         Collections.sort(testArrayList, new Comparator<Test>() {
             @Override
             public int compare(Test a, Test b) {
                 return -(a.getDate().compareTo(b.getDate()));
+            }
+        });
+    }
+
+    public void sortByScore() {
+        Collections.sort(testArrayList, new Comparator<Test>() {
+            @Override
+            public int compare(Test a, Test b) {
+                return -(a.getScore() - b.getScore());
             }
         });
     }
@@ -66,5 +75,12 @@ public class TestManager {
 
     public ArrayList<Test> getTestArrayList() {
         return testArrayList;
+    }
+
+    public static ArrayList<String> getSortArrayList() {
+        ArrayList<String> sortArrayList = new ArrayList<>();
+        sortArrayList.add("Highest test score");
+        sortArrayList.add("Latest test");
+        return sortArrayList;
     }
 }

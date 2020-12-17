@@ -1,20 +1,13 @@
 package com.example.onlinequiz.Model;
 
-import android.util.Log;
-
-import com.example.onlinequiz.Common.Helper;
-import com.google.gson.JsonArray;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 
 public class Test {
+
     private String categoryId;
     private ArrayList<QuestionInTest> questionInTestArrayList = new ArrayList<>();
     private int score;

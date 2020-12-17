@@ -1,22 +1,12 @@
 package com.example.onlinequiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.onlinequiz.Adapter.Common.TestAdapter;
-import com.example.onlinequiz.Adapter.Common.TestQuestionAdapter;
-import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Adapter.TestQuestionAdapter;
+import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Common.Message;
-import com.example.onlinequiz.Model.QuestionInTest;
-import com.example.onlinequiz.Model.Test;
-
-import java.util.ArrayList;
 
 public class TestDetailActivity extends Activity {
 
@@ -34,14 +24,14 @@ public class TestDetailActivity extends Activity {
     }
 
     private void initListView() {
-        questionAdapter = new TestQuestionAdapter(this, R.layout.test_question_item_layout, Commom.getTest().getQuestions());
+        questionAdapter = new TestQuestionAdapter(this, R.layout.test_question_item_layout, Common.getTest().getQuestions());
         lvQuestion.setAdapter(questionAdapter);
     }
 
     private void checkValidTest() {
         boolean isValidTest = false;
-        if (Commom.getTest() != null) {
-            if (Commom.getTest().getQuestions().size() > 0) isValidTest = true;
+        if (Common.getTest() != null) {
+            if (Common.getTest().getQuestions().size() > 0) isValidTest = true;
         }
         if (!isValidTest) exitAndToastErrMessage();
     }

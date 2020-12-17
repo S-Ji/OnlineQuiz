@@ -3,8 +3,10 @@ package com.example.onlinequiz.Model;
 public class QuestionInTestManager {
     private QuestionInTest[] questionInTestArr;
 
-    public QuestionInTestManager(){}
-    public QuestionInTestManager(QuestionInTest[] questionInTestArr){
+    public QuestionInTestManager() {
+    }
+
+    public QuestionInTestManager(QuestionInTest[] questionInTestArr) {
         setQuestionInTestArr(questionInTestArr);
     }
 
@@ -15,4 +17,5 @@ public class QuestionInTestManager {
     public void setQuestionInTestArr(QuestionInTest[] questionInTestArr) {
         this.questionInTestArr = questionInTestArr;
     }
+
 }

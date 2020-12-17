@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Common.Message;
+import com.example.onlinequiz.Common.SharedPreferencesKey;
 import com.example.onlinequiz.Model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
                     User loggedUser = snapshot.getValue(User.class);
                     if (loggedUser.getPassWord().equals(pwd)) {
                         saveLoggedUserInfo(username, pwd);
-                        Commom.currentUser = loggedUser;
+                        Common.currentUser = loggedUser;
                         setUserTests(snapshot);
 
                         // start home activity
@@ -125,15 +125,12 @@ public class MainActivity extends Activity {
         String testsJsonString = (testsSnapshot.exists())
                 ? testsSnapshot.getValue().toString()
                 : "[]";
-        Commom.currentUser.setTestManagerByJsonString(testsJsonString);
+        Common.currentUser.setTestManagerByJsonString(testsJsonString);
     }
 
     private void saveLoggedUserInfo(String username, String password) {
-        SharedPreferences sharedPreferences = getSharedParams();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("loggedUsername", username);
-        editor.putString("loggedPassword", password);
-        editor.apply();
+        sharedParamsPutString(SharedPreferencesKey.loggedUsername, username);
+        sharedParamsPutString(SharedPreferencesKey.loggedPassword, password);
     }
 
     private void showSignUpDialog() {

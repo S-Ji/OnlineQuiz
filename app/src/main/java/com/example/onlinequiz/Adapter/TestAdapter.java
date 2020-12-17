@@ -1,4 +1,4 @@
-package com.example.onlinequiz.Adapter.Common;
+package com.example.onlinequiz.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,11 +14,7 @@ import com.example.onlinequiz.Model.Question;
 import com.example.onlinequiz.Model.Test;
 import com.example.onlinequiz.R;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class TestAdapter extends BaseAdapter {
     private Context context;
@@ -48,7 +44,7 @@ public class TestAdapter extends BaseAdapter {
 
 
     class ViewHolder {
-        TextView txtCategory, txtScore, txtDate;
+        TextView txtCategory, txtScore, txtTotalScore, txtDate;
     }
 
     @Override
@@ -61,19 +57,22 @@ public class TestAdapter extends BaseAdapter {
 
             holder.txtCategory = (TextView) convertView.findViewById(R.id.txtCategory);
             holder.txtScore = (TextView) convertView.findViewById(R.id.txtScore);
+            holder.txtTotalScore = (TextView) convertView.findViewById(R.id.txtTotalScore);
             holder.txtDate = (TextView) convertView.findViewById(R.id.txtDate);
             convertView.setTag(holder);
         } else holder = (TestAdapter.ViewHolder) convertView.getTag();
         Test test = testArrayList.get(position);
 
         //
-        String score = test.getScore() + "/" + (test.getNumberOfQuestion() * 10);
+        String score = test.getScore() + "";
+        String totalScore = "/" + (test.getNumberOfQuestion() * 10);
         String category = Question.getCategoryNameById(test.getCategoryId());
         String date = Helper.getTestDate(Helper.convertISODateStringToDate(test.getDate()));
 
         //
         holder.txtCategory.setText(category);
         holder.txtScore.setText(score);
+        holder.txtTotalScore.setText(totalScore);
         holder.txtDate.setText(date);
 
         //

@@ -86,4 +86,21 @@ public class QuestionInTest {
         this.question = question;
     }
 
+    public boolean isSpeechQuestionCorrect() {
+        boolean result = QuestionInTest.isSpeechQuestionCorrect(getQuestion(), getUserAnswer());
+        return result;
+    }
+
+    public static boolean isSpeechQuestionCorrect(Question question, String userAnswer) {
+        boolean result = false;
+        try {
+            String correctAnswer = question.getQuestion();
+            correctAnswer = correctAnswer.replaceAll("[^\\w\\s]", "").toLowerCase().trim();
+            userAnswer = userAnswer.toLowerCase().trim();
+            result = userAnswer.equals(correctAnswer);
+            Log.d("xxx", "speech user answer" + userAnswer);
+        } catch (Exception e) {
+        }
+        return result;
+    }
 }

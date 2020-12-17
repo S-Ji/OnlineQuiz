@@ -1,7 +1,7 @@
 package com.example.onlinequiz.Database;
 
 
-import com.example.onlinequiz.Common.Commom;
+import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.User;
 import com.example.onlinequiz.Activity;
@@ -16,7 +16,7 @@ public class UserModel extends Model {
     }
 
     public void updateCurrentUserTests(String tag) {
-        User currentUser = Commom.getCurrentUser();
+        User currentUser = Common.getCurrentUser();
         getCollectionRef()
                 .child(currentUser.getUserName())
                 .child("tests")

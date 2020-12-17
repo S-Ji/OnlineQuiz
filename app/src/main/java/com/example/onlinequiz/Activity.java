@@ -7,13 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.onlinequiz.Common.SharedPreferencesKey;
 import com.example.onlinequiz.Fragment.InternetStatusFragment;
 
 import java.net.InetAddress;
@@ -29,8 +26,9 @@ public class Activity extends AppCompatActivity {
     FragmentManager fragmentManager = getFragmentManager();
     InternetStatusFragment internetStatusFragment;
 
+    // SHARED PREFERENCES
     public SharedPreferences getSharedParams() {
-        SharedPreferences sharedPreferences = getSharedPreferences("global-package", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SharedPreferencesKey.globalPackage, Context.MODE_PRIVATE);
         return sharedPreferences;
     }
 
@@ -45,6 +43,15 @@ public class Activity extends AppCompatActivity {
         editor.putString(key, value);
         editor.apply();
     }
+
+    public String sharedParamsGetString(String key, String defaultValue) {
+        String result = null;
+        SharedPreferences sharedPreferences = getSharedParams();
+        result = sharedPreferences.getString(key, defaultValue);
+        return result;
+
+    }
+
 
     // INTERNET
     public boolean internetConnectionAvailable() {
