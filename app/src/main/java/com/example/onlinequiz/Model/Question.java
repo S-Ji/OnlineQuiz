@@ -19,6 +19,7 @@ public class Question {
 
 
     private String IsImageAnswer;
+
     private static String[] categoryArr = new String[]{"English Easy", "English Normal", "English Hard", "Memes", "Games", "English Speech"};
 
     public Question(){}

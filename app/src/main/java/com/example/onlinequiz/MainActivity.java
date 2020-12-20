@@ -23,6 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MainActivity extends Activity {
     MaterialEditText edtNewUser, edtNewPassword, edtNewEmail;
     MaterialEditText edtUser, edtPassword;
@@ -90,34 +93,46 @@ public class MainActivity extends Activity {
     }
 
     private void signIn(String username, String pwd) {
-        isLoadingUser = true;
-        users.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String msg = "";
-                if (snapshot.exists()) {
-                    User loggedUser = snapshot.getValue(User.class);
-                    if (loggedUser.getPassWord().equals(pwd)) {
-                        saveLoggedUserInfo(username, pwd);
-                        Common.currentUser = loggedUser;
-                        setUserTests(snapshot);
+        if (isValidUsername(username)) {
+            isLoadingUser = true;
+            users.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String msg = "";
+                    if (snapshot.exists()) {
+                        User loggedUser = snapshot.getValue(User.class);
+                        if (loggedUser.getPassWord().equals(pwd)) {
+                            saveLoggedUserInfo(username, pwd);
+                            Common.currentUser = loggedUser;
+                            setUserTests(snapshot);
 
-                        // start home activity
-                        Intent homeActivity = new Intent(MainActivity.this, Home.class);
-                        startActivity(homeActivity);
-                        finish();
-                    } else msg = Message.wrongPassword;
-                } else msg = Message.userNotExist;
-                if (msg != "")
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
+                            // start home activity
+                            Intent homeActivity = new Intent(MainActivity.this, Home.class);
+                            startActivity(homeActivity);
+                            finish();
+                        } else msg = Message.wrongPassword;
+                    } else msg = Message.userNotExist;
+                    if (msg != "") {
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        isLoadingUser = false;
+                    }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, Message.checkInternet, Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(MainActivity.this, Message.checkInternet, Toast.LENGTH_SHORT).show();
+                }
 
-        });
+            });
+        } else {
+            Toast.makeText(this, Message.usernameInvalid, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isValidUsername(String username) {
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(username);
+        return matcher.find();
     }
 
     private void setUserTests(DataSnapshot userSnapshot) {

@@ -3,6 +3,7 @@ package com.example.onlinequiz;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -21,6 +22,11 @@ public class Done extends Activity {
 
     FirebaseDatabase database;
     DatabaseReference question_score;
+    MediaPlayer doneMusic;
+    MediaPlayer startMusic;
+    MediaPlayer mp3;
+    MediaPlayer mp5;
+    MediaPlayer mp6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +38,20 @@ public class Done extends Activity {
 
         mapping();
 
-        final MediaPlayer mp = MediaPlayer.create(this, R.raw.crash);
-        final MediaPlayer mp3 = MediaPlayer.create(this, R.raw.wow);
-        final MediaPlayer mp4 = MediaPlayer.create(this, R.raw.meme);
-        final MediaPlayer mp5 = MediaPlayer.create(this, R.raw.omg);
-        final MediaPlayer mp6 = MediaPlayer.create(this, R.raw.johnsena);
+        startMusic = MediaPlayer.create(this, R.raw.crash);
+        doneMusic = MediaPlayer.create(this, R.raw.meme);
+        mp3 = MediaPlayer.create(this, R.raw.wow);
+        mp5 = MediaPlayer.create(this, R.raw.omg);
+        mp6 = MediaPlayer.create(this, R.raw.johnsena);
         btnTryAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Done.this, Home.class);
-                mp4.pause();
+                doneMusic.pause();
                 mp3.pause();
                 mp5.pause();
                 mp6.pause();
-                mp.start();
+                startMusic.start();
                 startActivity(intent);
                 finish();
             }
@@ -58,15 +64,12 @@ public class Done extends Activity {
             int totalQuestion = extra.getInt("TOTAL");
             int correctAnswer = extra.getInt("CORRECTED");
             if (score < 50) {
-                mp4.start();
-            }
-            if (score >= 50 && score <= 70) {
+                doneMusic.start();
+            } else if (score <= 70) {
                 mp3.start();
-            }
-            if (score > 70 && score <= 90) {
+            } else if (score <= 90) {
                 mp5.start();
-            }
-            if (score > 90) {
+            } else {
                 mp6.start();
             }
             txtResultScore.setText(String.format("SCORE : %d", score));
@@ -97,4 +100,13 @@ public class Done extends Activity {
         btnTryAgain = (Button) findViewById(R.id.btnTryAgain);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        doneMusic.reset();
+        startMusic.reset();
+        mp3.reset();
+        mp5.reset();
+        mp6.reset();
+    }
 }

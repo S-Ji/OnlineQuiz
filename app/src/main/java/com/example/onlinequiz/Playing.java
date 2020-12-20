@@ -4,18 +4,22 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Common.Helper;
@@ -27,9 +31,13 @@ import com.example.onlinequiz.Interface.IFragmentCommunicate;
 import com.example.onlinequiz.Model.Question;
 import com.example.onlinequiz.Model.QuestionInTest;
 import com.example.onlinequiz.Model.Test;
-import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Playing extends Activity implements View.OnClickListener, ICallback<UserModel>, IFragmentCommunicate {
@@ -72,7 +80,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         initVoiceAnswerFragment();
 
         // start background music
-        //backgroundMp3 = MediaPlayer.create(this, R.raw.spongebob);
         backgroundMp3 = MediaPlayer.create(this, R.raw.wii);
         backgroundMp3.start();
     }
@@ -82,7 +89,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         voiceFragment = new VoiceFragment();
         fragmentTransaction.replace(R.id.frameVoiceAnswer, voiceFragment, "voice-answer");
         fragmentTransaction.commit();
-        //voiceFragment.hideVoiceEdt();
     }
 
     private void initTest() {
@@ -106,7 +112,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
     //
 
-
     private void initEvents() {
         btnA.setOnClickListener(this);
         btnB.setOnClickListener(this);
@@ -125,6 +130,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mCountDown.cancel();
                 solveTimeout();
             }
         });
@@ -317,7 +323,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         test.setScore(score);
         test.setDate(Helper.getCurrentISODateString());
         Common.getCurrentUser().getTestManager().add(test);
-        Common.questionsList.clear();
         userModel.updateCurrentUserTests(ModelTag.updateCurrentUserTests);
 
         Intent intent = new Intent(this, Done.class);
@@ -417,14 +422,18 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     @Override
-    public void communicate(JsonObject jsonObject, String tag) {
+    public void communicate(JSONObject jsonObject, String tag) {
+        try {
+            String eventName = jsonObject.getString("eventName");
+            if (tag.equals(VoiceFragment.fragmentTag)) {
+                if (eventName.equals("onReadyForSpeech")) onReadyForSpeech();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    // BACK PRESSED
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    private void onReadyForSpeech() {
     }
 
     @Override
@@ -432,7 +441,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         super.onDestroy();
         Log.d("xxx", "destroy");
         mCountDown.cancel();
-        backgroundMp3.stop();
+        backgroundMp3.reset();
     }
-
 }
+

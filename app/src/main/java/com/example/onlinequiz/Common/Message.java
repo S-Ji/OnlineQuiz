@@ -10,4 +10,5 @@ public class Message {
     public static String fillForm = "Please fill full information";
     public static String failedToDisplayTestDetail = "Failed to display test detail";
     public static String failedToDisplayQuestion = "Failed to display question";
+    public static String usernameInvalid = "Username is invalid";
 }

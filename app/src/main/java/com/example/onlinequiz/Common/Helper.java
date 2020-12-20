@@ -89,7 +89,9 @@ public class Helper {
     public static String ucFirst(String string) {
         String result = null;
         if (string != null) {
-            result = string.substring(0, 1).toUpperCase() + string.substring(1);
+            if (string.length() > 0) {
+                result = string.substring(0, 1).toUpperCase() + string.substring(1);
+            }
         }
         return result;
     }

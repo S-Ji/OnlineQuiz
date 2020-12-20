@@ -116,7 +116,12 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
 
     private void loadTest(Test test) {
         Common.setTest(test);
-        questionModel.listItemsByCategoryId(Common.test.getCategoryId(), ModelTag.listQuestionsByCategoryIdForDisplayTestHistory);
+        String categoryName = Question.getCategoryNameById(Common.getTest().getCategoryId());
+        if (categoryName.equals("English Speech")) {
+            questionModel.listSpeechEnglish(ModelTag.listQuestionsByCategoryIdForDisplayTestHistory);
+        } else {
+            questionModel.listItemsByCategoryId(Common.test.getCategoryId(), ModelTag.listQuestionsByCategoryIdForDisplayTestHistory);
+        }
     }
 
     private void mapping() {

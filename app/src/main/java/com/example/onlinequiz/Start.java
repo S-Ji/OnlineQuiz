@@ -1,11 +1,17 @@
 package com.example.onlinequiz;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Common.ModelTag;
@@ -14,6 +20,7 @@ import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Start extends Activity implements ICallback<Question> {
     Button btnPlay;
@@ -24,6 +31,11 @@ public class Start extends Activity implements ICallback<Question> {
     boolean isStartClicked = false;
 
     QuestionModel questionModel;
+    String[] permissions = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +47,33 @@ public class Start extends Activity implements ICallback<Question> {
         loadQuestion(Common.categoryId);
         initEvents();
         initInternetStatusFragment();
+    }
+
+    private boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p : permissions) {
+            result = ContextCompat.checkSelfPermission(this, p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 100);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == 100) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // do something
+            }
+            return;
+        }
     }
 
     private void initEvents() {
@@ -71,7 +110,7 @@ public class Start extends Activity implements ICallback<Question> {
         });
     }
 
-    private void setTestQuestionQty(){
+    private void setTestQuestionQty() {
         Common.testQuestionQty = (questionQty <= Common.questionsList.size()) ? questionQty : Common.questionsList.size();
     }
 
@@ -81,19 +120,27 @@ public class Start extends Activity implements ICallback<Question> {
     }
 
     private void loadQuestion(String categoryId) {
-        questionModel.listItemsByCategoryId(categoryId, ModelTag.listQuestionsByCategoryIdForDisplayTestQuestions);
+        String categoryName = Question.getCategoryNameById(categoryId);
+        if (categoryName.equals("English Speech")) {
+            questionModel.listSpeechEnglish(ModelTag.listQuestionForTest);
+        } else {
+            questionModel.listItemsByCategoryId(categoryId, ModelTag.listQuestionForTest);
+        }
     }
 
     // CALLBACK
     @Override
     public void itemCallBack(Question item, String tag) {
     }
+
     @Override
     public void listCallBack(ArrayList<Question> items, String tag) {
-        if (tag.equals(ModelTag.listQuestionsByCategoryIdForDisplayTestQuestions)) onTestQuestionsCallback(items);
+        if (tag.equals(ModelTag.listQuestionForTest))
+            onTestQuestionsCallback(items);
     }
 
     private void onTestQuestionsCallback(ArrayList<Question> questionArrayList) {
+        Log.d("xxx", "list call back: "+questionArrayList.size());
         Common.questionsList.clear();
         Common.questionsList.addAll(questionArrayList);
         Common.shuffleQuestionList();

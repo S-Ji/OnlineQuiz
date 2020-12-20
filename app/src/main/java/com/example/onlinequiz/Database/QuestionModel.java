@@ -1,5 +1,7 @@
 package com.example.onlinequiz.Database;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.example.onlinequiz.Interface.ICallback;
@@ -23,7 +25,31 @@ public class QuestionModel extends Model {
         getCollectionRef()
                 .orderByChild("CategoryId")
                 .equalTo(categoryId)
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<Question> questionArrayList = new ArrayList<>();
+                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                            Question ques = postSnapshot.getValue(Question.class);
+                            ques.setId(postSnapshot.getKey());
+                            setIsImageAnswer(postSnapshot, ques);
+                            setIsSpeechQuestion(postSnapshot, ques);
+                            questionArrayList.add(ques);
+                        }
+                        callback.listCallBack(questionArrayList, tag);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+    }
+
+    public void listSpeechEnglish(String tag) {
+        getCollectionRef()
+                .orderByChild("IsSpeechQuestion")
+                .equalTo("true")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ArrayList<Question> questionArrayList = new ArrayList<>();

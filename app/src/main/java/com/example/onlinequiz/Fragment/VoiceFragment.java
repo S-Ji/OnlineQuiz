@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -25,7 +26,15 @@ import androidx.core.content.ContextCompat;
 
 import com.example.onlinequiz.Interface.IFragmentCommunicate;
 import com.example.onlinequiz.R;
+import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -80,7 +89,7 @@ public class VoiceFragment extends MyFragment {
         });
     }
 
-    public void  onStopListening(){
+    public void onStopListening() {
         speechRecognizer.stopListening();
         micButton.setImageResource(R.drawable.black_mic);
     }
@@ -89,6 +98,13 @@ public class VoiceFragment extends MyFragment {
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("eventName", "onReadyForSpeech");
+                    communicate.communicate(jsonObject, VoiceFragment.fragmentTag);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -104,8 +120,10 @@ public class VoiceFragment extends MyFragment {
 
             @Override
             public void onBufferReceived(byte[] bytes) {
-
+                Log.d("xxx", "buffer received");
+                //playMp3(bytes);
             }
+
 
             @Override
             public void onEndOfSpeech() {
@@ -114,6 +132,7 @@ public class VoiceFragment extends MyFragment {
 
             @Override
             public void onError(int i) {
+                communicate.communicate("", VoiceFragment.fragmentTag);
             }
 
             @Override
@@ -149,7 +168,7 @@ public class VoiceFragment extends MyFragment {
         }
     }
 
-    public void hideVoiceEdt(){
+    public void hideVoiceEdt() {
         editText.setVisibility(View.GONE);
     }
 
@@ -159,6 +178,31 @@ public class VoiceFragment extends MyFragment {
         if (requestCode == RecordAudioRequestCode && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 Toast.makeText(getActivity(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private MediaPlayer mediaPlayer = new MediaPlayer();
+
+    private void playMp3(byte[] mp3SoundByteArray) {
+        try {
+            Log.d("xxx", "play called");
+            // create temp file that will hold byte array
+            File tempMp3 = File.createTempFile("kurchina", "mp3", getActivity().getCacheDir());
+            tempMp3.deleteOnExit();
+            FileOutputStream fos = new FileOutputStream(tempMp3);
+            fos.write(mp3SoundByteArray);
+            fos.close();
+
+            mediaPlayer.reset();
+            FileInputStream fis = new FileInputStream(tempMp3);
+            mediaPlayer.setDataSource(fis.getFD());
+
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException ex) {
+            String s = ex.toString();
+            Log.d("xxx", "play err: " + s);
+            ex.printStackTrace();
         }
     }
 }
