@@ -66,6 +66,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     QuestionInTest questionInTest;
     UserModel userModel;
     FragmentManager fragmentManager;
+    boolean isForceStopListening = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
 
     // MEDIA PLAYER
     private void initMp3() {
+        try {
+            correctAnswerMp3.reset();
+            wrongAnswerMp3.reset();
+        } catch (Exception e) {
+        }
         correctAnswerMp3 = MediaPlayer.create(this, R.raw.correct);
         wrongAnswerMp3 = MediaPlayer.create(this, R.raw.wrong);
     }
@@ -173,9 +179,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             playCorrectSound();
             score += 10;
             correctAnswer++;
-            Log.d("xxx", "correct");
         } else {
-            Log.d("xxx", "wrong");
             playIncorrectSound();
         }
         showNextQuestion();
@@ -198,6 +202,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
 
     // SHOW QUESTION
     private void showQuestion(int index) {
+        isForceStopListening = false;
         if (index < getTotalQuestion()) {
             thisQuestion++;
             solveBackgroundMusic();
@@ -222,8 +227,12 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void displayAnswer() {
+
+        // generate random answer order. eg: ['b', 'c', 'd', 'a'];
         ArrayList<String> answerOrder = Question.genRandomAnswerOrder();
         showAnswerContainerVisible();
+
+        // display answer with random order
         if (getCurrentQuestion().getIsImageAnswer().equals("true")) {
             // display picture answer
             displayPictureAnswer(answerOrder);
@@ -233,8 +242,9 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             // display text answer
             displayTextAnswer(answerOrder);
         }
-
         questionInTest = new QuestionInTest();
+
+        // save random answer order to questionInTest  
         questionInTest.setAnswerOrder(answerOrder);
         questionInTest.setQuestionId(getCurrentQuestion().getId());
     }
@@ -414,10 +424,14 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     // FRAGMENT COMMUNICATE
     @Override
     public void communicate(String value, String tag) {
-        if (tag.equals(VoiceFragment.fragmentTag)) {
-            String userAnswer = value;
-            mCountDown.cancel();
-            solveAnswerSelected(userAnswer);
+        if (!isForceStopListening) {
+            if (tag.equals(VoiceFragment.fragmentTag)) {
+                String userAnswer = value;
+                mCountDown.cancel();
+                solveAnswerSelected(userAnswer);
+            }
+        }else{
+            isForceStopListening = false;
         }
     }
 

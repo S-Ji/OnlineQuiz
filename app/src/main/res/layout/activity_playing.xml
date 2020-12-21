@@ -213,7 +213,8 @@
                     android:layout_below="@id/frameVoiceAnswer"
                     android:layout_alignParentRight="true"
                     android:text="Next"
-                    android:textAllCaps="false"></Button>
+                    android:textAllCaps="false"
+                    android:visibility="gone"></Button>
             </RelativeLayout>
 
 

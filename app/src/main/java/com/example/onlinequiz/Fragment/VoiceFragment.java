@@ -47,6 +47,7 @@ public class VoiceFragment extends MyFragment {
     private ImageView micButton;
     private IFragmentCommunicate communicate;
     public static String fragmentTag = "voice-fragment";
+    boolean isMicOn = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,37 +75,31 @@ public class VoiceFragment extends MyFragment {
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
-        micButton.setOnTouchListener(new View.OnTouchListener() {
+        micButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    onStopListening();
-                }
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            public void onClick(View v) {
+
+                if (isMicOn == true) {
+                    //onStopListening();
+                } else {
+                    Log.d("xxx", "enable mic "+isMicOn);
                     micButton.setImageResource(R.drawable.blue_mic);
                     speechRecognizer.startListening(speechRecognizerIntent);
                 }
-                return false;
             }
         });
     }
 
     public void onStopListening() {
         speechRecognizer.stopListening();
-        micButton.setImageResource(R.drawable.black_mic);
     }
 
     private void initRecognitionListener() {
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("eventName", "onReadyForSpeech");
-                    communicate.communicate(jsonObject, VoiceFragment.fragmentTag);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Log.d("xxx", "on ready");
+                isMicOn = true;
             }
 
             @Override
@@ -120,28 +115,25 @@ public class VoiceFragment extends MyFragment {
 
             @Override
             public void onBufferReceived(byte[] bytes) {
-                Log.d("xxx", "buffer received");
-                //playMp3(bytes);
             }
 
 
             @Override
             public void onEndOfSpeech() {
-                //communicate.communicate("", VoiceFragment.fragmentTag);
             }
 
             @Override
             public void onError(int i) {
-                communicate.communicate("", VoiceFragment.fragmentTag);
+                Log.d("xxx", "error");
+                onSendResult("");
             }
 
             @Override
             public void onResults(Bundle bundle) {
-                micButton.setImageResource(R.drawable.black_mic);
+                Log.d("xxx", "on result called");
                 ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 String text = data.get(0);
-                editText.setText(text);
-                communicate.communicate(text, VoiceFragment.fragmentTag);
+                onSendResult(text);
             }
 
             @Override
@@ -155,6 +147,20 @@ public class VoiceFragment extends MyFragment {
             }
         });
     }
+
+    private void reset() {
+        micButton.setImageResource(R.drawable.black_mic);
+        isMicOn = false;
+    }
+
+    private void onSendResult(String value) {
+        Log.d("xxx", "on send result called");
+        micButton.setImageResource(R.drawable.black_mic);
+        editText.setText(value);
+        communicate.communicate(value, VoiceFragment.fragmentTag);
+        reset();
+    }
+
 
     @Override
     public void onDetach() {

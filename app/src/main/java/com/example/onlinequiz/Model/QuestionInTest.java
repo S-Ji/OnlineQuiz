@@ -98,7 +98,6 @@ public class QuestionInTest {
         String correctAnswer = Helper.getPureString(question.getQuestion());
         userAnswer = userAnswer.toLowerCase().trim();
         result = userAnswer.equals(correctAnswer);
-        Log.d("xxx", "speech user answer" + userAnswer);
         return result;
     }
 }

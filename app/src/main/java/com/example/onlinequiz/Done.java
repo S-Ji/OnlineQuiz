@@ -63,11 +63,16 @@ public class Done extends Activity {
             int score = extra.getInt("SCORE");
             int totalQuestion = extra.getInt("TOTAL");
             int correctAnswer = extra.getInt("CORRECTED");
-            if (score < 50) {
+            float percent = ((float) correctAnswer / totalQuestion) * 100;
+
+            Log.d("xxx", "correct: " + correctAnswer);
+            Log.d("xxx", "total: " + totalQuestion);
+            Log.d("xxx", "percent: " + percent);
+            if (percent < 50) {
                 doneMusic.start();
-            } else if (score <= 70) {
+            } else if (percent <= 70) {
                 mp3.start();
-            } else if (score <= 90) {
+            } else if (percent <= 90) {
                 mp5.start();
             } else {
                 mp6.start();
