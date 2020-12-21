@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
@@ -18,6 +17,9 @@ import com.example.onlinequiz.Common.ModelTag;
 import com.example.onlinequiz.Database.QuestionModel;
 import com.example.onlinequiz.Interface.ICallback;
 import com.example.onlinequiz.Model.Question;
+import com.example.onlinequiz.Model.QuestionInTest;
+import com.example.onlinequiz.Model.Test;
+import com.example.onlinequiz.Model.TestManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +142,6 @@ public class Start extends Activity implements ICallback<Question> {
     }
 
     private void onTestQuestionsCallback(ArrayList<Question> questionArrayList) {
-        Log.d("xxx", "list call back: "+questionArrayList.size());
         Common.questionsList.clear();
         Common.questionsList.addAll(questionArrayList);
         Common.shuffleQuestionList();
@@ -148,8 +149,39 @@ public class Start extends Activity implements ICallback<Question> {
         if (isStartClicked) play();
     }
 
+    private ArrayList<Question> getDiffQuestionsWthPrevTest(ArrayList<Question> questionArrayList) {
+        ArrayList<Question> result = null;
+        TestManager testManager = Common.getCurrentUser().getTestManager();
+        if (testManager.getTestArrayList().size() > 0) {
+            if (questionArrayList.size() >= (Common.testQuestionQty * 2)) {
+                result = new ArrayList<>();
+                Test latestTest = testManager.getLatestTest();
+                ArrayList<String> ids = getIdsByQuestionInTestArrayList(latestTest.getQuestions());
+                for (Question q : questionArrayList) {
+                    if (ids.indexOf(q.getId()) < 0) result.add(q);
+                    if (result.size() == Common.testQuestionQty) break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private ArrayList<String> getIdsByQuestionInTestArrayList(ArrayList<QuestionInTest> questionArrayList) {
+        ArrayList<String> idArrayList = new ArrayList<>();
+        for (QuestionInTest q : questionArrayList) {
+            idArrayList.add(q.getQuestionId());
+        }
+        return idArrayList;
+    }
+
     private void play() {
         setTestQuestionQty();
+        ArrayList<Question> diffQuestions = getDiffQuestionsWthPrevTest((ArrayList<Question>) Common.questionsList);
+        if (diffQuestions != null) {
+            Common.questionsList.clear();
+            Common.questionsList.addAll(diffQuestions);
+        }
+
         MediaPlayer mp = MediaPlayer.create(this, R.raw.crash);
         Intent intent = new Intent(Start.this, Playing.class);
         startActivity(intent);

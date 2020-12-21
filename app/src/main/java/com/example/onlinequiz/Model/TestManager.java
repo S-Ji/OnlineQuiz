@@ -83,4 +83,18 @@ public class TestManager {
         sortArrayList.add("Latest test");
         return sortArrayList;
     }
+
+    public Test getLatestTest() {
+        Test test = null;
+        if (getTestArrayList().size() > 0) {
+            test = getTestArrayList().get(0);
+            for (Test t : getTestArrayList()) {
+                if (-test.getDate().compareTo(t.getDate()) > 0) {
+                    test = t;
+                }
+            }
+            test = getTestArrayList().get(0);
+        }
+        return test;
+    }
 }
