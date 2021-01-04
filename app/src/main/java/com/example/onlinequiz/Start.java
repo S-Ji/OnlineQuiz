@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
@@ -153,13 +154,13 @@ public class Start extends Activity implements ICallback<Question> {
         ArrayList<Question> result = null;
         TestManager testManager = Common.getCurrentUser().getTestManager();
         if (testManager.getTestArrayList().size() > 0) {
-            if (questionArrayList.size() >= (Common.testQuestionQty * 2)) {
+            Test latestTest = testManager.getLatestTest();
+            if (questionArrayList.size() >= (latestTest.getQuestions().size() * 2)) {
                 result = new ArrayList<>();
-                Test latestTest = testManager.getLatestTest();
                 ArrayList<String> ids = getIdsByQuestionInTestArrayList(latestTest.getQuestions());
                 for (Question q : questionArrayList) {
                     if (ids.indexOf(q.getId()) < 0) result.add(q);
-                    if (result.size() == Common.testQuestionQty) break;
+                    if (result.size() >= Common.testQuestionQty) break;
                 }
             }
         }

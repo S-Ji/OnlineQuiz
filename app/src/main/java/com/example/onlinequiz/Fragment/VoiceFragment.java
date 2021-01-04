@@ -48,6 +48,7 @@ public class VoiceFragment extends MyFragment {
     private IFragmentCommunicate communicate;
     public static String fragmentTag = "voice-fragment";
     boolean isMicOn = false;
+    int pos = -1;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class VoiceFragment extends MyFragment {
                 if (isMicOn == true) {
                     //onStopListening();
                 } else {
-                    Log.d("xxx", "enable mic "+isMicOn);
+                    Log.d("xxx", "enable mic " + isMicOn);
                     micButton.setImageResource(R.drawable.blue_mic);
                     speechRecognizer.startListening(speechRecognizerIntent);
                 }
@@ -125,7 +126,7 @@ public class VoiceFragment extends MyFragment {
             @Override
             public void onError(int i) {
                 Log.d("xxx", "error");
-                onSendResult("");
+                emitError();
             }
 
             @Override
@@ -161,6 +162,19 @@ public class VoiceFragment extends MyFragment {
         reset();
     }
 
+    private void emitError() {
+        Log.d("xxx", "emit error");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("eventName", "onError");
+            micButton.setImageResource(R.drawable.black_mic);
+            editText.setText("");
+            communicate.communicate(jsonObject, VoiceFragment.fragmentTag);
+            reset();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onDetach() {
@@ -210,5 +224,13 @@ public class VoiceFragment extends MyFragment {
             Log.d("xxx", "play err: " + s);
             ex.printStackTrace();
         }
+    }
+
+    public void setPos(int value) {
+        this.pos = value;
+    }
+
+    public int getPos() {
+        return pos;
     }
 }

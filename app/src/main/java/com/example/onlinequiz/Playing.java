@@ -83,6 +83,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         // start background music
         backgroundMp3 = MediaPlayer.create(this, R.raw.wii);
         backgroundMp3.start();
+        startTest();
     }
 
     private void initVoiceAnswerFragment() {
@@ -145,7 +146,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     private void showNextQuestion() {
         showQuestion(++index);
     }
-
 
     // ON TEXT/PICTURE ANSWER SELECTED
     @Override
@@ -212,8 +212,8 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
 
             // RANDOM ANSWER
             displayAnswer();
-            //
-            //if (!getCurrentQuestion().getIsSpeechQuestion().equals("true")) mCountDown.start();
+            if (!getCurrentQuestion().getIsSpeechQuestion().equals("true"))
+                voiceFragment.setPos(index);
             mCountDown.start();
         } else onDone();
     }
@@ -345,12 +345,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         finish();
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        startTest();
-    }
-
     private void startTest() {
         mCountDown = new CountDownTimer(TIMEOUT, INTERVAL) {
             @Override
@@ -429,8 +423,10 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
                 String userAnswer = value;
                 mCountDown.cancel();
                 solveAnswerSelected(userAnswer);
+                this.voiceFragment.setPos(index + 1);
+                Log.d("ppp", "update pos: "+voiceFragment.getPos());
             }
-        }else{
+        } else {
             isForceStopListening = false;
         }
     }
@@ -441,6 +437,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             String eventName = jsonObject.getString("eventName");
             if (tag.equals(VoiceFragment.fragmentTag)) {
                 if (eventName.equals("onReadyForSpeech")) onReadyForSpeech();
+                if (eventName.equals("onError")) onSpeechError();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -450,10 +447,23 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     private void onReadyForSpeech() {
     }
 
+    private void onSpeechError() {
+        int pos = voiceFragment.getPos();
+        Log.d("ppp", "voice timeout; "+"index: "+index+"; "+"pos: "+pos);
+        if (pos == index || pos == -1) {
+            this.voiceFragment.setPos(index+1);
+            String userAnswer = "";
+            mCountDown.cancel();
+            solveAnswerSelected(userAnswer);
+        }else{
+            this.voiceFragment.setPos(index);
+        }
+        Log.d("ppp", "update pos: "+voiceFragment.getPos());
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("xxx", "destroy");
         mCountDown.cancel();
         backgroundMp3.reset();
     }
