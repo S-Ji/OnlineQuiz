@@ -213,7 +213,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             displayAnswer();
             if (!getCurrentQuestion().getIsVoiceAnswer().equals("true"))
                 voiceFragment.setPos(index);
-            mCountDown.start();
+            startCountdown();
         } else onDone();
     }
 
@@ -345,23 +345,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void startTest() {
-        Question question = getCurrentQuestion();
-        int timeout = question.getTimeLimit() * 1000;
-        Log.d("xxx", "question time limit: "+timeout);
-        progressBar.setMax(timeout);
-        mCountDown = new CountDownTimer(timeout, INTERVAL) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                progressBar.setProgress(progressValue);
-                progressValue += 100;
-            }
-
-            @Override
-            public void onFinish() {
-                mCountDown.cancel();
-                solveTimeout();
-            }
-        };
         showQuestion(index);
     }
 
@@ -425,8 +408,8 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             if (tag.equals(VoiceFragment.fragmentTag)) {
                 String userAnswer = value;
                 mCountDown.cancel();
-                solveAnswerSelected(userAnswer);
                 this.voiceFragment.setPos(index + 1);
+                solveAnswerSelected(userAnswer);
             }
         } else {
             isForceStopListening = false;
@@ -438,15 +421,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         try {
             String eventName = jsonObject.getString("eventName");
             if (tag.equals(VoiceFragment.fragmentTag)) {
-                if (eventName.equals("onReadyForSpeech")) onReadyForSpeech();
                 if (eventName.equals("onError")) onSpeechError();
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private void onReadyForSpeech() {
     }
 
     private void onSpeechError() {
@@ -466,6 +445,26 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         super.onDestroy();
         mCountDown.cancel();
         backgroundMp3.reset();
+    }
+
+    private void startCountdown() {
+        Question question = getCurrentQuestion();
+        int timeout = question.getTimeLimit() * 1000;
+        progressBar.setMax(timeout);
+        if (mCountDown != null) mCountDown.cancel();
+        mCountDown = new CountDownTimer(timeout, INTERVAL) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                progressBar.setProgress(progressValue);
+                progressValue += 100;
+            }
+
+            @Override
+            public void onFinish() {
+                mCountDown.cancel();
+                solveTimeout();
+            }
+        }.start();
     }
 }
 
