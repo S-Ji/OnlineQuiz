@@ -88,12 +88,12 @@ public class QuestionInTest {
         this.question = question;
     }
 
-    public boolean isSpeechQuestionCorrect() {
-        boolean result = QuestionInTest.isSpeechQuestionCorrect(getQuestion(), getUserAnswer());
+    public boolean isVoiceAnswerCorrect() {
+        boolean result = QuestionInTest.isVoiceAnswerCorrect(getQuestion(), getUserAnswer());
         return result;
     }
 
-    public static boolean isSpeechQuestionCorrect(Question question, String userAnswer) {
+    public static boolean isVoiceAnswerCorrect(Question question, String userAnswer) {
         boolean result;
         String correctAnswer = Helper.getPureString(question.getQuestion());
         userAnswer = userAnswer.toLowerCase().trim();

@@ -83,7 +83,6 @@ public class VoiceFragment extends MyFragment {
                 if (isMicOn == true) {
                     //onStopListening();
                 } else {
-                    Log.d("xxx", "enable mic " + isMicOn);
                     micButton.setImageResource(R.drawable.blue_mic);
                     speechRecognizer.startListening(speechRecognizerIntent);
                 }
@@ -99,7 +98,6 @@ public class VoiceFragment extends MyFragment {
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
-                Log.d("xxx", "on ready");
                 isMicOn = true;
             }
 
@@ -125,13 +123,11 @@ public class VoiceFragment extends MyFragment {
 
             @Override
             public void onError(int i) {
-                Log.d("xxx", "error");
                 emitError();
             }
 
             @Override
             public void onResults(Bundle bundle) {
-                Log.d("xxx", "on result called");
                 ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 String text = data.get(0);
                 onSendResult(text);
@@ -155,7 +151,6 @@ public class VoiceFragment extends MyFragment {
     }
 
     private void onSendResult(String value) {
-        Log.d("xxx", "on send result called");
         micButton.setImageResource(R.drawable.black_mic);
         editText.setText(value);
         communicate.communicate(value, VoiceFragment.fragmentTag);
@@ -163,7 +158,6 @@ public class VoiceFragment extends MyFragment {
     }
 
     private void emitError() {
-        Log.d("xxx", "emit error");
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("eventName", "onError");
@@ -205,7 +199,6 @@ public class VoiceFragment extends MyFragment {
 
     private void playMp3(byte[] mp3SoundByteArray) {
         try {
-            Log.d("xxx", "play called");
             // create temp file that will hold byte array
             File tempMp3 = File.createTempFile("kurchina", "mp3", getActivity().getCacheDir());
             tempMp3.deleteOnExit();
@@ -221,7 +214,6 @@ public class VoiceFragment extends MyFragment {
             mediaPlayer.start();
         } catch (IOException ex) {
             String s = ex.toString();
-            Log.d("xxx", "play err: " + s);
             ex.printStackTrace();
         }
     }

@@ -65,9 +65,6 @@ public class Done extends Activity {
             int correctAnswer = extra.getInt("CORRECTED");
             float percent = ((float) correctAnswer / totalQuestion) * 100;
 
-            Log.d("xxx", "correct: " + correctAnswer);
-            Log.d("xxx", "total: " + totalQuestion);
-            Log.d("xxx", "percent: " + percent);
             if (percent < 50) {
                 doneMusic.start();
             } else if (percent <= 70) {

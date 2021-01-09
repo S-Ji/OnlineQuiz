@@ -43,7 +43,7 @@ import java.util.ArrayList;
 public class Playing extends Activity implements View.OnClickListener, ICallback<UserModel>, IFragmentCommunicate {
 
     FrameLayout frameVoiceAnswer;
-    RelativeLayout rltMain, pictureAnswerContainer, voiceAnswerContainer, rltQuestionSpeech;
+    RelativeLayout rltMain, pictureAnswerContainer, voiceAnswerContainer, rltAnswerVoice;
     LinearLayout textAnswerContainer;
     ProgressBar progressBar;
     ImageView question_image;
@@ -51,12 +51,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     VoiceFragment voiceFragment;
 
     ImageView imgA, imgB, imgC, imgD;
-    TextView txtScore, txtQuestionNum, question_text, txtSpeechQuestion;
+    TextView txtScore, txtQuestionNum, question_text, txtVoiceAnswer;
     MediaPlayer correctAnswerMp3;
     MediaPlayer wrongAnswerMp3;
     MediaPlayer backgroundMp3;
     final static long INTERVAL = 100;
-    final static long TIMEOUT = 12000;
     int progressValue = 0;
     int index = 0, score = 0, thisQuestion = 0, correctAnswer;
 
@@ -192,8 +191,8 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
 
     private boolean isCorrectAnswer(String answer) {
         boolean result;
-        if (getCurrentQuestion().getIsSpeechQuestion().equals("true")) {
-            result = QuestionInTest.isSpeechQuestionCorrect(getCurrentQuestion(), answer);
+        if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
+            result = QuestionInTest.isVoiceAnswerCorrect(getCurrentQuestion(), answer);
         } else {
             result = (answer.trim().equals(getCurrentQuestion().getCorrectAnswer().trim()));
         }
@@ -212,14 +211,14 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
 
             // RANDOM ANSWER
             displayAnswer();
-            if (!getCurrentQuestion().getIsSpeechQuestion().equals("true"))
+            if (!getCurrentQuestion().getIsVoiceAnswer().equals("true"))
                 voiceFragment.setPos(index);
             mCountDown.start();
         } else onDone();
     }
 
     private void solveBackgroundMusic() {
-        if (getCurrentQuestion().getIsSpeechQuestion().equals("true")) {
+        if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
             if (backgroundMp3.isPlaying()) backgroundMp3.pause();
         } else {
             if (!backgroundMp3.isPlaying()) backgroundMp3.start();
@@ -237,7 +236,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             // display picture answer
             displayPictureAnswer(answerOrder);
 
-        } else if (getCurrentQuestion().getIsSpeechQuestion().equals("true")) {
+        } else if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
         } else {
             // display text answer
             displayTextAnswer(answerOrder);
@@ -254,7 +253,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             pictureAnswerContainer.setVisibility(View.VISIBLE);
             textAnswerContainer.setVisibility(View.GONE);
             voiceAnswerContainer.setVisibility(View.GONE);
-        } else if (getCurrentQuestion().getIsSpeechQuestion().equals("true")) {
+        } else if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
             // display text answer
             voiceAnswerContainer.setVisibility(View.VISIBLE);
             textAnswerContainer.setVisibility(View.GONE);
@@ -310,11 +309,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
                     .into(question_image);
             question_image.setVisibility(View.VISIBLE);
             question_text.setVisibility(View.GONE);
-            rltQuestionSpeech.setVisibility(View.GONE);
+            rltAnswerVoice.setVisibility(View.GONE);
 
-        } else if (getCurrentQuestion().getIsSpeechQuestion().equals("true")) {
-            txtSpeechQuestion.setText(getCurrentQuestion().getQuestion());
-            rltQuestionSpeech.setVisibility(View.VISIBLE);
+        } else if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
+            txtVoiceAnswer.setText(getCurrentQuestion().getQuestion());
+            rltAnswerVoice.setVisibility(View.VISIBLE);
             question_text.setVisibility(View.GONE);
             question_image.setVisibility(View.GONE);
         } else {
@@ -322,7 +321,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             question_text.setText(getCurrentQuestion().getQuestion());
             question_text.setVisibility(View.VISIBLE);
             question_image.setVisibility(View.GONE);
-            rltQuestionSpeech.setVisibility(View.GONE);
+            rltAnswerVoice.setVisibility(View.GONE);
         }
     }
 
@@ -346,7 +345,11 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void startTest() {
-        mCountDown = new CountDownTimer(TIMEOUT, INTERVAL) {
+        Question question = getCurrentQuestion();
+        int timeout = question.getTimeLimit() * 1000;
+        Log.d("xxx", "question time limit: "+timeout);
+        progressBar.setMax(timeout);
+        mCountDown = new CountDownTimer(timeout, INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
                 progressBar.setProgress(progressValue);
@@ -364,7 +367,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
 
     private void solveTimeout() {
         playIncorrectSound();
-        if (getCurrentQuestion().getIsSpeechQuestion().equals("true"))
+        if (getCurrentQuestion().getIsVoiceAnswer().equals("true"))
             voiceFragment.onStopListening();
         questionInTest.setUserAnswer("");
         test.addQuestion(questionInTest);
@@ -372,13 +375,13 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void mapping() {
-        rltQuestionSpeech = (RelativeLayout) findViewById(R.id.rltQuestionSpeech);
+        rltAnswerVoice = (RelativeLayout) findViewById(R.id.rltAnswerVoice);
         voiceAnswerContainer = (RelativeLayout) findViewById(R.id.rltVoiceAnswerContainer);
         pictureAnswerContainer = (RelativeLayout) findViewById(R.id.pictureAnswerContainer);
         textAnswerContainer = (LinearLayout) findViewById(R.id.textAnswerContainer);
         frameVoiceAnswer = (FrameLayout) findViewById(R.id.frameVoiceAnswer);
 
-        txtSpeechQuestion = (TextView) findViewById(R.id.txtSpeechQuestion);
+        txtVoiceAnswer = (TextView) findViewById(R.id.txtVoiceAnswer);
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtQuestionNum = (TextView) findViewById(R.id.txtTotalQuestion);
         question_text = (TextView) findViewById(R.id.question_text);
@@ -424,7 +427,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
                 mCountDown.cancel();
                 solveAnswerSelected(userAnswer);
                 this.voiceFragment.setPos(index + 1);
-                Log.d("ppp", "update pos: "+voiceFragment.getPos());
             }
         } else {
             isForceStopListening = false;
@@ -449,16 +451,14 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
 
     private void onSpeechError() {
         int pos = voiceFragment.getPos();
-        Log.d("ppp", "voice timeout; "+"index: "+index+"; "+"pos: "+pos);
         if (pos == index || pos == -1) {
-            this.voiceFragment.setPos(index+1);
+            this.voiceFragment.setPos(index + 1);
             String userAnswer = "";
             mCountDown.cancel();
             solveAnswerSelected(userAnswer);
-        }else{
+        } else {
             this.voiceFragment.setPos(index);
         }
-        Log.d("ppp", "update pos: "+voiceFragment.getPos());
     }
 
     @Override

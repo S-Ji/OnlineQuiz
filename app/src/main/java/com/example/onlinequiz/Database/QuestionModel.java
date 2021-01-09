@@ -30,14 +30,7 @@ public class QuestionModel extends Model {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<Question> questionArrayList = new ArrayList<>();
-                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                            Question ques = postSnapshot.getValue(Question.class);
-                            ques.setId(postSnapshot.getKey());
-                            setIsImageAnswer(postSnapshot, ques);
-                            setIsSpeechQuestion(postSnapshot, ques);
-                            questionArrayList.add(ques);
-                        }
+                        ArrayList<Question> questionArrayList = getQuestionArrayListBySnapshot(snapshot);
                         callback.listCallBack(questionArrayList, tag);
                     }
 
@@ -49,19 +42,12 @@ public class QuestionModel extends Model {
 
     public void listSpeechEnglish(String tag) {
         getCollectionRef()
-                .orderByChild("IsSpeechQuestion")
+                .orderByChild("IsVoiceAnswer")
                 .equalTo("true")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<Question> questionArrayList = new ArrayList<>();
-                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                            Question ques = postSnapshot.getValue(Question.class);
-                            ques.setId(postSnapshot.getKey());
-                            setIsImageAnswer(postSnapshot, ques);
-                            setIsSpeechQuestion(postSnapshot, ques);
-                            questionArrayList.add(ques);
-                        }
+                        ArrayList<Question> questionArrayList = getQuestionArrayListBySnapshot(snapshot);
                         callback.listCallBack(questionArrayList, tag);
                     }
 
@@ -71,22 +57,12 @@ public class QuestionModel extends Model {
                 });
     }
 
-    private void setIsImageAnswer(DataSnapshot questionSnapshot, Question question) {
-        DataSnapshot isImageAnswerSnapshot = questionSnapshot.child("IsImageAnswer");
-        String isImageAnswer = "false";
-        if (isImageAnswerSnapshot.exists()) {
-            isImageAnswer = isImageAnswerSnapshot.getValue().toString();
+    public ArrayList<Question> getQuestionArrayListBySnapshot(DataSnapshot snapshot) {
+        ArrayList<Question> questionArrayList = new ArrayList<>();
+        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+            Question ques = Question.getQuestionByDataSnapshot(postSnapshot);
+            questionArrayList.add(ques);
         }
-        question.setIsImageAnswer(isImageAnswer);
+        return questionArrayList;
     }
-
-    private void setIsSpeechQuestion(DataSnapshot questionSnapshot, Question question) {
-        DataSnapshot isSpeechQuestionSnapshot = questionSnapshot.child("IsSpeechQuestion");
-        String isSpeechQuestion = "false";
-        if (isSpeechQuestionSnapshot.exists()) {
-            isSpeechQuestion = isSpeechQuestionSnapshot.getValue().toString();
-        }
-        question.setIsSpeechQuestion(isSpeechQuestion);
-    }
-
 }

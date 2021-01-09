@@ -1,5 +1,7 @@
 package com.example.onlinequiz.Common;
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -108,5 +110,21 @@ public class Helper {
         return (int)(Math.floor( min+ Math.random()*(max-min)));
     }
 
+    public static int getIntByDataSnapshot(DataSnapshot snapshot, String key, int defaultValue) {
+        try {
+            String str = snapshot.child(key).getValue().toString();
+            return Integer.parseInt(str);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    public static String getStringByDataSnapshot(DataSnapshot snapshot, String key, String defaultValue) {
+        try {
+            return snapshot.child(key).getValue().toString();
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
 
 }

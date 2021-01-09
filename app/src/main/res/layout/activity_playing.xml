@@ -37,7 +37,7 @@
             android:visibility="invisible" />
 
         <RelativeLayout
-            android:id="@+id/rltQuestionSpeech"
+            android:id="@+id/rltAnswerVoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -55,7 +55,7 @@
                 android:textSize="20dp" />
 
             <TextView
-                android:id="@+id/txtSpeechQuestion"
+                android:id="@+id/txtVoiceAnswer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtSpeechLabel"

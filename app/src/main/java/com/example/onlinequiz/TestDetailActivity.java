@@ -49,7 +49,6 @@ public class TestDetailActivity extends Activity {
                 }
             }
         });
-
     }
 
     private void initListView() {

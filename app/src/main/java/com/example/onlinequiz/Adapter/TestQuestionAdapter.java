@@ -55,8 +55,8 @@ public class TestQuestionAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        RelativeLayout rltMessage, rltMain, textAnswerContainer, pictureAnswerContainer, speechAnswerContainer, speechQuestionContainer;
-        TextView txtQuestion, txtA, txtB, txtC, txtD, txtMessage, txtSpeechQuestion, txtSpeechAnswer;
+        RelativeLayout rltMessage, rltMain, textAnswerContainer, pictureAnswerContainer, speechAnswerContainer, voiceAnswerContainer;
+        TextView txtQuestion, txtA, txtB, txtC, txtD, txtMessage, txtVoiceAnswer, txtSpeechAnswer;
         ImageView imgA, imgB, imgC, imgD, imgStatus, imgQuestion, imgQuestionIcon, imgQuestionSpeaker;
 
     }
@@ -100,8 +100,8 @@ public class TestQuestionAdapter extends BaseAdapter {
     private boolean isCorrect(QuestionInTest questionInTest) {
         boolean result;
         Question question = questionInTest.getQuestion();
-        if (question.getIsSpeechQuestion().equals("true")) {
-            result = questionInTest.isSpeechQuestionCorrect();
+        if (question.getIsVoiceAnswer().equals("true")) {
+            result = questionInTest.isVoiceAnswerCorrect();
         } else {
             result = (questionInTest.getUserAnswer().equals(questionInTest.getQuestion().getCorrectAnswer()));
         }
@@ -117,9 +117,9 @@ public class TestQuestionAdapter extends BaseAdapter {
             Picasso.with(context)
                     .load(question.getQuestion())
                     .into(holder.imgQuestion);
-        } else if (question.getIsSpeechQuestion().equals("true")) {
+        } else if (question.getIsVoiceAnswer().equals("true")) {
             initOnSpeakerClickEvents(questionInTest, holder);
-            holder.txtSpeechQuestion.setText(question.getQuestion());
+            holder.txtVoiceAnswer.setText(question.getQuestion());
         } else {
             String questionString = (index + 1) + ". " + questionInTest.getQuestion().getQuestion();
             holder.txtQuestion.setText(questionString);
@@ -140,7 +140,7 @@ public class TestQuestionAdapter extends BaseAdapter {
     }
 
     private void displayQuestionIcon(QuestionInTest questionInTest, ViewHolder holder) {
-        if (questionInTest.getQuestion().getIsSpeechQuestion().equals("true"))
+        if (questionInTest.getQuestion().getIsVoiceAnswer().equals("true"))
             holder.imgQuestionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.black_mic));
         else
             holder.imgQuestionIcon.setImageDrawable(null);
@@ -150,15 +150,15 @@ public class TestQuestionAdapter extends BaseAdapter {
         if (question.getIsImageQuestion().equals("true")) {
             holder.imgQuestion.setVisibility(View.VISIBLE);
             holder.txtQuestion.setVisibility(View.GONE);
-            holder.speechQuestionContainer.setVisibility((View.GONE));
-        } else if (question.getIsSpeechQuestion().equals("true")) {
-            holder.speechQuestionContainer.setVisibility((View.VISIBLE));
+            holder.voiceAnswerContainer.setVisibility((View.GONE));
+        } else if (question.getIsVoiceAnswer().equals("true")) {
+            holder.voiceAnswerContainer.setVisibility((View.VISIBLE));
             holder.txtQuestion.setVisibility(View.GONE);
             holder.imgQuestion.setVisibility(View.GONE);
         } else {
             holder.txtQuestion.setVisibility(View.VISIBLE);
             holder.imgQuestion.setVisibility(View.GONE);
-            holder.speechQuestionContainer.setVisibility((View.GONE));
+            holder.voiceAnswerContainer.setVisibility((View.GONE));
         }
     }
 
@@ -166,7 +166,7 @@ public class TestQuestionAdapter extends BaseAdapter {
     private void displayAnswer(QuestionInTest questionInTest, ViewHolder holder) {
         if (questionInTest.getQuestion().getIsImageAnswer().equals("true")) {
             displayPictureAnswer(questionInTest, holder);
-        } else if (questionInTest.getQuestion().getIsSpeechQuestion().equals("true")) {
+        } else if (questionInTest.getQuestion().getIsVoiceAnswer().equals("true")) {
             displaySpeechAnswer(questionInTest, holder);
         } else {
             displayTextAnswer(questionInTest, holder);
@@ -178,7 +178,7 @@ public class TestQuestionAdapter extends BaseAdapter {
     private void displaySpeechAnswer(QuestionInTest questionInTest, ViewHolder holder) {
         holder.txtSpeechAnswer.setText(Helper.ucFirst(questionInTest.getUserAnswer()));
         // format
-        if (questionInTest.isSpeechQuestionCorrect()) {
+        if (questionInTest.isVoiceAnswerCorrect()) {
             // correct
             holder.txtSpeechAnswer.setTextColor(context.getResources().getColor(R.color.light_success));
 
@@ -276,7 +276,7 @@ public class TestQuestionAdapter extends BaseAdapter {
             holder.pictureAnswerContainer.setVisibility(View.VISIBLE);
             holder.textAnswerContainer.setVisibility(View.GONE);
             holder.speechAnswerContainer.setVisibility(View.GONE);
-        } else if (questionInTest.getQuestion().getIsSpeechQuestion().equals("true")) {
+        } else if (questionInTest.getQuestion().getIsVoiceAnswer().equals("true")) {
             holder.speechAnswerContainer.setVisibility(View.VISIBLE);
             holder.textAnswerContainer.setVisibility(View.GONE);
             holder.pictureAnswerContainer.setVisibility(View.GONE);
@@ -308,7 +308,7 @@ public class TestQuestionAdapter extends BaseAdapter {
         holder.imgQuestionIcon = (ImageView) v.findViewById(R.id.imgQuestionIcon);
         holder.imgQuestionSpeaker = (ImageView) v.findViewById(R.id.imgQuestionSpeaker);
 
-        holder.txtSpeechQuestion = (TextView) v.findViewById(R.id.txtSpeechQuestion);
+        holder.txtVoiceAnswer = (TextView) v.findViewById(R.id.txtVoiceAnswer);
         holder.txtSpeechAnswer = (TextView) v.findViewById(R.id.txtSpeechAnswer);
 
         holder.txtMessage = (TextView) v.findViewById(R.id.txtMessage);
@@ -316,7 +316,7 @@ public class TestQuestionAdapter extends BaseAdapter {
         holder.rltMain = (RelativeLayout) v.findViewById(R.id.rltMain);
         holder.textAnswerContainer = (RelativeLayout) v.findViewById(R.id.textAnswerContainer);
         holder.pictureAnswerContainer = (RelativeLayout) v.findViewById(R.id.pictureAnswerContainer);
-        holder.speechQuestionContainer = (RelativeLayout) v.findViewById(R.id.speechQuestionContainer);
+        holder.voiceAnswerContainer = (RelativeLayout) v.findViewById(R.id.voiceAnswerContainer);
         holder.speechAnswerContainer = (RelativeLayout) v.findViewById(R.id.speechAnswerContainer);
     }
 }

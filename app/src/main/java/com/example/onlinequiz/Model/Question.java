@@ -1,5 +1,6 @@
 package com.example.onlinequiz.Model;
 
+import com.example.onlinequiz.Common.Helper;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
@@ -15,14 +16,17 @@ public class Question {
     private String CorrectAnswer;
     private String CategoryId;
     private String IsImageQuestion;
-    private String IsSpeechQuestion;
+    private String IsAudioQuestion;
+    private int TimeLimit;
 
 
+    private String IsVoiceAnswer;
     private String IsImageAnswer;
 
     private static String[] categoryArr = new String[]{"English Easy", "English Normal", "English Hard", "Memes", "Games", "English Speech"};
 
-    public Question(){}
+    public Question() {
+    }
 
     public Question(String question, String a, String b, String c, String d, String correctAnswer, String categoryId, String isImageQuestion) {
         Question = question;
@@ -153,7 +157,6 @@ public class Question {
         return index;
     }
 
-
     public static String getLetter(int index) {
         return getDefaultAnswerOrder().get(index);
     }
@@ -164,11 +167,54 @@ public class Question {
         return result;
     }
 
-    public String getIsSpeechQuestion() {
-        return IsSpeechQuestion;
+    public String getIsVoiceAnswer() {
+        return IsVoiceAnswer;
     }
 
-    public void setIsSpeechQuestion(String isSpeechQuestion) {
-        IsSpeechQuestion = isSpeechQuestion;
+    public void setIsVoiceAnswer(String isVoiceAnswer) {
+        IsVoiceAnswer = isVoiceAnswer;
+    }
+
+    // GETTER & SETTER
+    public String getIsAudioQuestion() {
+        return IsAudioQuestion;
+    }
+
+    public void setIsAudioQuestion(String isAudioQuestion) {
+        IsAudioQuestion = isAudioQuestion;
+    }
+
+    public int getTimeLimit() {
+        return TimeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        TimeLimit = timeLimit;
+    }
+
+    public static Question getQuestionByDataSnapshot(DataSnapshot dataSnapshot) {
+        if (dataSnapshot != null) {
+            String id = dataSnapshot.getKey();
+            String question = dataSnapshot.child("Question").getValue().toString();
+            String correctAnswer = dataSnapshot.child("CorrectAnswer").getValue().toString();
+            String answerA = dataSnapshot.child("A").getValue().toString();
+            String answerB = dataSnapshot.child("B").getValue().toString();
+            String answerC = dataSnapshot.child("C").getValue().toString();
+            String answerD = dataSnapshot.child("D").getValue().toString();
+            String isImageQuestion = Helper.getStringByDataSnapshot(dataSnapshot, "IsImageQuestion", "false");
+            String isImageAnswer = Helper.getStringByDataSnapshot(dataSnapshot, "IsImageAnswer", "false");
+            String isVoiceAnswer = Helper.getStringByDataSnapshot(dataSnapshot, "IsVoiceAnswer", "false");
+            String isAudioQuestion = Helper.getStringByDataSnapshot(dataSnapshot, "IsAudioQuestion", "false");
+            int timeLimit = Helper.getIntByDataSnapshot(dataSnapshot, "TimeLimit", 15);
+            String categoryId = dataSnapshot.child("CategoryId").getValue().toString();
+            Question qt = new Question(question, answerA, answerB, answerC, answerD, correctAnswer, categoryId, isImageQuestion);
+            qt.setIsImageAnswer(isImageAnswer);
+            qt.setIsVoiceAnswer(isVoiceAnswer);
+            qt.setIsAudioQuestion(isAudioQuestion);
+            qt.setTimeLimit(timeLimit);
+            qt.setId(id);
+            return qt;
+        }
+        return null;
     }
 }
