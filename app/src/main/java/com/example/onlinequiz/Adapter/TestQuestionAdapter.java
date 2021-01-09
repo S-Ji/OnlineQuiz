@@ -39,6 +39,7 @@ public class TestQuestionAdapter extends BaseAdapter {
         this.tts = tts;
     }
 
+
     @Override
     public int getCount() {
         return questionInTestArrayList.size();
@@ -117,7 +118,7 @@ public class TestQuestionAdapter extends BaseAdapter {
             Picasso.with(context)
                     .load(question.getQuestion())
                     .into(holder.imgQuestion);
-        } else if (question.getIsVoiceAnswer().equals("true")) {
+        } else if (question.getIsVoiceAnswer().equals("true") || question.getIsAudioQuestion().equals("true")) {
             initOnSpeakerClickEvents(questionInTest, holder);
             holder.txtVoiceAnswer.setText(question.getQuestion());
         } else {
@@ -151,7 +152,7 @@ public class TestQuestionAdapter extends BaseAdapter {
             holder.imgQuestion.setVisibility(View.VISIBLE);
             holder.txtQuestion.setVisibility(View.GONE);
             holder.voiceAnswerContainer.setVisibility((View.GONE));
-        } else if (question.getIsVoiceAnswer().equals("true")) {
+        } else if (question.getIsVoiceAnswer().equals("true")||question.getIsAudioQuestion().equals("true")) {
             holder.voiceAnswerContainer.setVisibility((View.VISIBLE));
             holder.txtQuestion.setVisibility(View.GONE);
             holder.imgQuestion.setVisibility(View.GONE);

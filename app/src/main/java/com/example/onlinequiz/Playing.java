@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,11 +19,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import com.example.onlinequiz.Common.Common;
 import com.example.onlinequiz.Common.Helper;
+import com.example.onlinequiz.Common.Message;
 import com.example.onlinequiz.Common.ModelTag;
 import com.example.onlinequiz.Database.UserModel;
 import com.example.onlinequiz.Fragment.VoiceFragment;
@@ -39,19 +42,20 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Playing extends Activity implements View.OnClickListener, ICallback<UserModel>, IFragmentCommunicate {
 
     FrameLayout frameVoiceAnswer;
-    RelativeLayout rltMain, pictureAnswerContainer, voiceAnswerContainer, rltAnswerVoice;
+    RelativeLayout rltMain, pictureAnswerContainer, voiceAnswerContainer, rltQuestionWithCaption;
     LinearLayout textAnswerContainer;
     ProgressBar progressBar;
     ImageView question_image;
     Button btnA, btnB, btnC, btnD, btnNext;
     VoiceFragment voiceFragment;
 
-    ImageView imgA, imgB, imgC, imgD;
-    TextView txtScore, txtQuestionNum, question_text, txtVoiceAnswer;
+    ImageView imgA, imgB, imgC, imgD, imgAudio;
+    TextView txtScore, txtQuestionNum, question_text, txtCaptionQuestion, txtCaption;
     MediaPlayer correctAnswerMp3;
     MediaPlayer wrongAnswerMp3;
     MediaPlayer backgroundMp3;
@@ -66,6 +70,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     UserModel userModel;
     FragmentManager fragmentManager;
     boolean isForceStopListening = false;
+    TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +87,29 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         // start background music
         backgroundMp3 = MediaPlayer.create(this, R.raw.wii);
         backgroundMp3.start();
+        initTextToSpeech();
         startTest();
+    }
+
+    private void initTextToSpeech() {
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int ttsLang = tts.setLanguage(Locale.US);
+
+                    if (ttsLang == TextToSpeech.LANG_MISSING_DATA
+                            || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "The Language is not supported!");
+                    } else {
+                        Log.i("TTS", "Language Supported.");
+                    }
+                    Log.i("TTS", "Initialization success.");
+                } else {
+                    Toast.makeText(Playing.this, "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void initVoiceAnswerFragment() {
@@ -128,8 +155,8 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         imgB.setOnClickListener(this);
         imgC.setOnClickListener(this);
         imgD.setOnClickListener(this);
-
         initBtnNextClick();
+        initImgAudioClick();
     }
 
     private void initBtnNextClick() {
@@ -138,6 +165,15 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
             public void onClick(View v) {
                 mCountDown.cancel();
                 solveTimeout();
+            }
+        });
+    }
+
+    private void initImgAudioClick() {
+        imgAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speak(getCurrentQuestion().getQuestion());
             }
         });
     }
@@ -218,7 +254,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void solveBackgroundMusic() {
-        if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
+        if (getCurrentQuestion().getIsVoiceAnswer().equals("true") || getCurrentQuestion().getIsAudioQuestion().equals("true")) {
             if (backgroundMp3.isPlaying()) backgroundMp3.pause();
         } else {
             if (!backgroundMp3.isPlaying()) backgroundMp3.start();
@@ -302,26 +338,66 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void displayQuestion() {
-        if (getCurrentQuestion().getIsImageQuestion().equals("true")) {
-            //if question img
-            Picasso.with(getBaseContext())
-                    .load(getCurrentQuestion().getQuestion())
-                    .into(question_image);
-            question_image.setVisibility(View.VISIBLE);
-            question_text.setVisibility(View.GONE);
-            rltAnswerVoice.setVisibility(View.GONE);
+        solveQuestionVisibility();
+        switch (getCurrentQuestion().getQuestionType()) {
+            case "text":
+                switch (getCurrentQuestion().getAnswerType()){
+                    case "picture":
+                    case "text":
+                        question_text.setText(getCurrentQuestion().getQuestion());
+                        break;
+                    case "voice":
+                        txtCaption.setText(Message.speakThisSentence);
+                        txtCaptionQuestion.setText(getCurrentQuestion().getQuestion());
+                        break;
+                }
+                break;
+            case "audio":
+                switch (getCurrentQuestion().getAnswerType()){
+                    case "picture":
+                    case "text":
+                        txtCaption.setText(Message.listenAndChooseTheCorrectAnswer);
+                        break;
+                    case "voice":
+                        txtCaption.setText(Message.listenAndRepeat);
+                        break;
+                }
+                break;
+            case "picture":
+                Picasso.with(getBaseContext())
+                        .load(getCurrentQuestion().getQuestion())
+                        .into(question_image);
+                break;
+        }
+    }
 
-        } else if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
-            txtVoiceAnswer.setText(getCurrentQuestion().getQuestion());
-            rltAnswerVoice.setVisibility(View.VISIBLE);
-            question_text.setVisibility(View.GONE);
-            question_image.setVisibility(View.GONE);
-        } else {
-            //if question text, set img visible
-            question_text.setText(getCurrentQuestion().getQuestion());
-            question_text.setVisibility(View.VISIBLE);
-            question_image.setVisibility(View.GONE);
-            rltAnswerVoice.setVisibility(View.GONE);
+    private void solveQuestionVisibility() {
+        switch (getCurrentQuestion().getQuestionType()) {
+            case "text":
+                if (getCurrentQuestion().getAnswerType().equals("voice")) {
+                    rltQuestionWithCaption.setVisibility(View.VISIBLE);
+                    question_text.setVisibility(View.GONE);
+                    question_image.setVisibility(View.GONE);
+                } else {
+                    question_text.setVisibility(View.VISIBLE);
+                    question_image.setVisibility(View.GONE);
+                    rltQuestionWithCaption.setVisibility(View.GONE);
+                }
+                imgAudio.setVisibility(View.GONE);
+                txtCaptionQuestion.setVisibility(View.VISIBLE);
+                break;
+            case "audio":
+                rltQuestionWithCaption.setVisibility(View.VISIBLE);
+                imgAudio.setVisibility(View.VISIBLE);
+                txtCaptionQuestion.setVisibility(View.GONE);
+                question_text.setVisibility(View.GONE);
+                question_image.setVisibility(View.GONE);
+                break;
+            case "picture":
+                question_image.setVisibility(View.VISIBLE);
+                question_text.setVisibility(View.GONE);
+                rltQuestionWithCaption.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -358,17 +434,19 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void mapping() {
-        rltAnswerVoice = (RelativeLayout) findViewById(R.id.rltAnswerVoice);
+        rltQuestionWithCaption = (RelativeLayout) findViewById(R.id.rltQuestionWithCaption);
         voiceAnswerContainer = (RelativeLayout) findViewById(R.id.rltVoiceAnswerContainer);
         pictureAnswerContainer = (RelativeLayout) findViewById(R.id.pictureAnswerContainer);
         textAnswerContainer = (LinearLayout) findViewById(R.id.textAnswerContainer);
         frameVoiceAnswer = (FrameLayout) findViewById(R.id.frameVoiceAnswer);
 
-        txtVoiceAnswer = (TextView) findViewById(R.id.txtVoiceAnswer);
+        txtCaption = (TextView) findViewById(R.id.txtCaption);
+        txtCaptionQuestion = (TextView) findViewById(R.id.txtCaptionQuestion);
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtQuestionNum = (TextView) findViewById(R.id.txtTotalQuestion);
         question_text = (TextView) findViewById(R.id.question_text);
         question_image = (ImageView) findViewById(R.id.question_image);
+        imgAudio = (ImageView) findViewById(R.id.imgAudio);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         rltMain = (RelativeLayout) findViewById(R.id.rltMain);
 
@@ -465,6 +543,13 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
                 solveTimeout();
             }
         }.start();
+    }
+
+    private void speak(String value) {
+        int speechStatus = tts.speak(value, TextToSpeech.QUEUE_FLUSH, null);
+        if (speechStatus == TextToSpeech.ERROR) {
+            Log.e("TTS", "Error in converting Text to Speech!");
+        }
     }
 }
 

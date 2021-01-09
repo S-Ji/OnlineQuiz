@@ -15,57 +15,75 @@
 
 
         <!-- QUESTION -->
-        <ImageView
-            android:id="@+id/question_image"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:gravity="center" />
-
-        <TextView
-            android:id="@+id/question_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:gravity="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="25dp"
-            android:visibility="invisible" />
-
         <RelativeLayout
-            android:id="@+id/rltAnswerVoice"
+            android:id="@+id/rltQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/question_image"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
+                android:gravity="center" />
+
+            <!-- TEXT QUESTION -->
             <TextView
-                android:id="@+id/txtSpeechLabel"
+                android:id="@+id/question_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="25dp"
-                android:gravity="left"
-                android:paddingHorizontal="10dp"
-                android:text="Speak this sentence"
-                android:textColor="#E91E63"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/txtVoiceAnswer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtSpeechLabel"
-                android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:text="How many people are there in your family?"
+                android:text="This is a question"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="25dp" />
-        </RelativeLayout>
+                android:textSize="25dp"
+                android:visibility="gone" />
 
+            <!-- CAPTION QUESTION -->
+            <RelativeLayout
+                android:id="@+id/rltQuestionWithCaption"
+                android:layout_width="match_parent"
+                android:paddingHorizontal="10dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtCaption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="25dp"
+                    android:gravity="left"
+                    android:text="Speak this sentence"
+                    android:textColor="#E91E63"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/txtCaptionQuestion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtCaption"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center"
+                    android:text="How many people are there in your family?"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="25dp" />
+
+                <ImageView
+                    android:id="@+id/imgAudio"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/txtCaption"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/speaker"></ImageView>
+            </RelativeLayout>
+
+        </RelativeLayout>
         <!-- STATUS BAR -->
         <RelativeLayout
             android:id="@+id/rltStatusBar"

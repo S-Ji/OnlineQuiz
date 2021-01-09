@@ -3,6 +3,8 @@ package com.example.onlinequiz;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,6 +19,7 @@ public class TestDetailActivity extends Activity {
     ListView lvQuestion;
     TestQuestionAdapter questionAdapter;
     TextToSpeech tts;
+    Button btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +28,18 @@ public class TestDetailActivity extends Activity {
         initTextToSpeech();
         checkValidTest();
         mapping();
+        initBtnBackClick();
         initListView();
         initInternetStatusFragment();
+    }
+
+    private void initBtnBackClick(){
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
 
@@ -66,10 +79,13 @@ public class TestDetailActivity extends Activity {
 
     private void mapping() {
         lvQuestion = (ListView) findViewById(R.id.lvQuestion);
+        btnBack = (Button) findViewById(R.id.btnBack);
     }
 
     private void exitAndToastErrMessage() {
         finish();
         Toast.makeText(this, Message.failedToDisplayTestDetail, Toast.LENGTH_SHORT).show();
     }
+
+
 }

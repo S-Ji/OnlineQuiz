@@ -217,4 +217,22 @@ public class Question {
         }
         return null;
     }
+
+
+    public String getQuestionType() {
+        String result;
+        if (getIsImageQuestion().equals("true")) result = "picture";
+        else if (getIsAudioQuestion().equals("true")) result = "audio";
+        else result = "text";
+        return result;
+    }
+
+    public String getAnswerType() {
+        String result;
+        if (getIsImageAnswer().equals("true")) result = "picture";
+        else if (getIsVoiceAnswer().equals("true")) result = "voice";
+        else result = "text";
+        return result;
+    }
+
 }

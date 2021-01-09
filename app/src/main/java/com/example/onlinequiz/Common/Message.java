@@ -11,4 +11,7 @@ public class Message {
     public static String failedToDisplayTestDetail = "Failed to display test detail";
     public static String failedToDisplayQuestion = "Failed to display question";
     public static String usernameInvalid = "Username is invalid";
+    public static String speakThisSentence = "Speak this sentence";
+    public static String listenAndRepeat = "Listen and repeat";
+    public static String listenAndChooseTheCorrectAnswer = "Listen and choose the correct Answer";
 }
