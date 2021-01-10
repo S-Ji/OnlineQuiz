@@ -101,7 +101,7 @@ public class Helper {
     public static String getPureString(String string) {
         String result = null;
         if (string != null) {
-            result = string.replaceAll("[^\\w\\s\']", "").toLowerCase().trim();
+            result = string.replaceAll("[^\\w\\s\']", "").trim().toLowerCase();
         }
         return result;
     }

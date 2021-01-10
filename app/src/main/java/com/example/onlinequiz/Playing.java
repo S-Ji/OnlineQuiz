@@ -47,7 +47,7 @@ import java.util.Locale;
 public class Playing extends Activity implements View.OnClickListener, ICallback<UserModel>, IFragmentCommunicate {
 
     FrameLayout frameVoiceAnswer;
-    RelativeLayout rltMain, pictureAnswerContainer, voiceAnswerContainer, rltQuestionWithCaption;
+    RelativeLayout rltMain, pictureAnswerContainer, voiceAnswerContainer;
     LinearLayout textAnswerContainer;
     ProgressBar progressBar;
     ImageView question_image;
@@ -55,7 +55,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     VoiceFragment voiceFragment;
 
     ImageView imgA, imgB, imgC, imgD, imgAudio;
-    TextView txtScore, txtQuestionNum, question_text, txtCaptionQuestion, txtCaption;
+    TextView txtScore, txtQuestionNum, question_text, txtCaption;
     MediaPlayer correctAnswerMp3;
     MediaPlayer wrongAnswerMp3;
     MediaPlayer backgroundMp3;
@@ -226,11 +226,17 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private boolean isCorrectAnswer(String answer) {
-        boolean result;
-        if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
-            result = QuestionInTest.isVoiceAnswerCorrect(getCurrentQuestion(), answer);
-        } else {
-            result = (answer.trim().equals(getCurrentQuestion().getCorrectAnswer().trim()));
+        boolean result = false;
+        Question question = getCurrentQuestion();
+
+        switch (question.getAnswerType()) {
+            case "picture":
+            case "text":
+                result = (answer.trim().equals(question.getCorrectAnswer().trim()));
+                break;
+            case "voice":
+                result = QuestionInTest.isVoiceAnswerCorrect(question, answer);
+                break;
         }
         return result;
     }
@@ -240,6 +246,7 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         isForceStopListening = false;
         if (index < getTotalQuestion()) {
             thisQuestion++;
+            setViewVisibility(getCurrentQuestion().getQuestionType(), getCurrentQuestion().getAnswerType());
             solveBackgroundMusic();
             displayQuestionNum();
             resetProgress();
@@ -262,10 +269,8 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void displayAnswer() {
-
         // generate random answer order. eg: ['b', 'c', 'd', 'a'];
         ArrayList<String> answerOrder = Question.genRandomAnswerOrder();
-        showAnswerContainerVisible();
 
         // display answer with random order
         if (getCurrentQuestion().getIsImageAnswer().equals("true")) {
@@ -282,23 +287,6 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
         // save random answer order to questionInTest  
         questionInTest.setAnswerOrder(answerOrder);
         questionInTest.setQuestionId(getCurrentQuestion().getId());
-    }
-
-    private void showAnswerContainerVisible() {
-        if (getCurrentQuestion().getIsImageAnswer().equals("true")) {
-            pictureAnswerContainer.setVisibility(View.VISIBLE);
-            textAnswerContainer.setVisibility(View.GONE);
-            voiceAnswerContainer.setVisibility(View.GONE);
-        } else if (getCurrentQuestion().getIsVoiceAnswer().equals("true")) {
-            // display text answer
-            voiceAnswerContainer.setVisibility(View.VISIBLE);
-            textAnswerContainer.setVisibility(View.GONE);
-            pictureAnswerContainer.setVisibility(View.GONE);
-        } else {
-            textAnswerContainer.setVisibility(View.VISIBLE);
-            pictureAnswerContainer.setVisibility(View.GONE);
-            voiceAnswerContainer.setVisibility(View.GONE);
-        }
     }
 
     // TEXT ANSWER
@@ -338,22 +326,21 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void displayQuestion() {
-        solveQuestionVisibility();
         switch (getCurrentQuestion().getQuestionType()) {
             case "text":
-                switch (getCurrentQuestion().getAnswerType()){
+                switch (getCurrentQuestion().getAnswerType()) {
                     case "picture":
                     case "text":
                         question_text.setText(getCurrentQuestion().getQuestion());
                         break;
                     case "voice":
                         txtCaption.setText(Message.speakThisSentence);
-                        txtCaptionQuestion.setText(getCurrentQuestion().getQuestion());
+                        question_text.setText(getCurrentQuestion().getQuestion());
                         break;
                 }
                 break;
             case "audio":
-                switch (getCurrentQuestion().getAnswerType()){
+                switch (getCurrentQuestion().getAnswerType()) {
                     case "picture":
                     case "text":
                         txtCaption.setText(Message.listenAndChooseTheCorrectAnswer);
@@ -367,36 +354,82 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
                 Picasso.with(getBaseContext())
                         .load(getCurrentQuestion().getQuestion())
                         .into(question_image);
+
+                switch (getCurrentQuestion().getAnswerType()) {
+                    case "picture":
+                    case "text":
+                        break;
+                    case "voice":
+                        txtCaption.setText(Message.whatIsThis);
+                        break;
+                }
                 break;
         }
     }
 
-    private void solveQuestionVisibility() {
-        switch (getCurrentQuestion().getQuestionType()) {
+    private void setViewVisibility(String questionType, String answerType) {
+        setQuestionViewVisibility(questionType, answerType);
+        setAnswerViewVisibility(answerType);
+    }
+
+    private void setQuestionViewVisibility(String questionType, String answerType) {
+        switch (questionType) {
             case "text":
-                if (getCurrentQuestion().getAnswerType().equals("voice")) {
-                    rltQuestionWithCaption.setVisibility(View.VISIBLE);
-                    question_text.setVisibility(View.GONE);
-                    question_image.setVisibility(View.GONE);
-                } else {
-                    question_text.setVisibility(View.VISIBLE);
-                    question_image.setVisibility(View.GONE);
-                    rltQuestionWithCaption.setVisibility(View.GONE);
+                switch (answerType) {
+                    case "picture":
+                    case "text":
+                        question_text.setVisibility(View.VISIBLE);
+                        question_image.setVisibility(View.GONE);
+                        txtCaption.setVisibility(View.GONE);
+                        break;
+                    case "voice":
+                        question_image.setVisibility(View.GONE);
+                        txtCaption.setVisibility(View.VISIBLE);
+                        question_text.setVisibility(View.VISIBLE);
+                        break;
                 }
                 imgAudio.setVisibility(View.GONE);
-                txtCaptionQuestion.setVisibility(View.VISIBLE);
                 break;
             case "audio":
-                rltQuestionWithCaption.setVisibility(View.VISIBLE);
                 imgAudio.setVisibility(View.VISIBLE);
-                txtCaptionQuestion.setVisibility(View.GONE);
-                question_text.setVisibility(View.GONE);
+                txtCaption.setVisibility(View.VISIBLE);
                 question_image.setVisibility(View.GONE);
+                question_text.setVisibility(View.GONE);
                 break;
             case "picture":
                 question_image.setVisibility(View.VISIBLE);
                 question_text.setVisibility(View.GONE);
-                rltQuestionWithCaption.setVisibility(View.GONE);
+                imgAudio.setVisibility(View.GONE);
+                switch (answerType) {
+                    case "picture":
+                    case "text":
+                        txtCaption.setVisibility(View.GONE);
+                        break;
+                    case "voice":
+                        txtCaption.setVisibility(View.VISIBLE);
+                        break;
+                }
+
+                break;
+        }
+    }
+
+    private void setAnswerViewVisibility(String answerType) {
+        switch (answerType) {
+            case "picture":
+                pictureAnswerContainer.setVisibility(View.VISIBLE);
+                textAnswerContainer.setVisibility(View.GONE);
+                voiceAnswerContainer.setVisibility(View.GONE);
+                break;
+            case "text":
+                textAnswerContainer.setVisibility(View.VISIBLE);
+                pictureAnswerContainer.setVisibility(View.GONE);
+                voiceAnswerContainer.setVisibility(View.GONE);
+                break;
+            case "voice":
+                voiceAnswerContainer.setVisibility(View.VISIBLE);
+                textAnswerContainer.setVisibility(View.GONE);
+                pictureAnswerContainer.setVisibility(View.GONE);
                 break;
         }
     }
@@ -434,14 +467,12 @@ public class Playing extends Activity implements View.OnClickListener, ICallback
     }
 
     private void mapping() {
-        rltQuestionWithCaption = (RelativeLayout) findViewById(R.id.rltQuestionWithCaption);
         voiceAnswerContainer = (RelativeLayout) findViewById(R.id.rltVoiceAnswerContainer);
         pictureAnswerContainer = (RelativeLayout) findViewById(R.id.pictureAnswerContainer);
         textAnswerContainer = (LinearLayout) findViewById(R.id.textAnswerContainer);
         frameVoiceAnswer = (FrameLayout) findViewById(R.id.frameVoiceAnswer);
 
         txtCaption = (TextView) findViewById(R.id.txtCaption);
-        txtCaptionQuestion = (TextView) findViewById(R.id.txtCaptionQuestion);
         txtScore = (TextView) findViewById(R.id.txtScore);
         txtQuestionNum = (TextView) findViewById(R.id.txtTotalQuestion);
         question_text = (TextView) findViewById(R.id.question_text);

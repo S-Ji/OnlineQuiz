@@ -95,9 +95,13 @@ public class QuestionInTest {
 
     public static boolean isVoiceAnswerCorrect(Question question, String userAnswer) {
         boolean result;
-        String correctAnswer = Helper.getPureString(question.getQuestion());
-        userAnswer = userAnswer.toLowerCase().trim();
-        result = userAnswer.equals(correctAnswer);
+        if (question.getIsImageQuestion().equals("true")) {
+            result = (userAnswer.trim().toLowerCase().indexOf(Helper.getPureString(question.getCorrectAnswer())) > -1);
+        } else {
+            String correctAnswer = Helper.getPureString(question.getQuestion());
+            userAnswer = userAnswer.toLowerCase().trim();
+            result = userAnswer.equals(correctAnswer);
+        }
         return result;
     }
 }

@@ -179,7 +179,7 @@ public class TestQuestionAdapter extends BaseAdapter {
     private void displaySpeechAnswer(QuestionInTest questionInTest, ViewHolder holder) {
         holder.txtSpeechAnswer.setText(Helper.ucFirst(questionInTest.getUserAnswer()));
         // format
-        if (questionInTest.isVoiceAnswerCorrect()) {
+        if (questionInTest.isVoiceAnswerCorrect(questionInTest.getQuestion(), questionInTest.getUserAnswer())) {
             // correct
             holder.txtSpeechAnswer.setTextColor(context.getResources().getColor(R.color.light_success));
 
