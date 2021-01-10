@@ -36,7 +36,8 @@
         <RelativeLayout
             android:id="@+id/rltWrapper"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_above="@id/btnBack">
 
             <!-- TITLE -->
             <TextView
@@ -99,7 +100,18 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            android:text="Back"
+            android:textAllCaps="false"
+            android:textColor="@color/light"></Button>
     </RelativeLayout>
+
     <!-- INTERNET STATUS FRAME -->
     <include layout="@layout/frame_internet_status" />
 

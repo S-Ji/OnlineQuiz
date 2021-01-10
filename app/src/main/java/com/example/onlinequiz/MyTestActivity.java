@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -28,6 +29,7 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
     RelativeLayout rltMain, rltMessage;
     Spinner spinnerSort;
     ListView lvTest;
+    Button btnBack;
     TestAdapter testAdapter;
     ArrayList<Test> testArrayList;
 
@@ -47,6 +49,16 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
         checkTestArrayList();
         initInternetStatusFragment();
         initSortSpinner();
+        initBtnBackClick();
+    }
+
+    private void initBtnBackClick(){
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void setupTestArrayList() {
@@ -125,6 +137,7 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
     }
 
     private void mapping() {
+        btnBack = (Button) findViewById(R.id.btnBack);
         lvTest = (ListView) findViewById(R.id.lvTest);
         rltMain = (RelativeLayout) findViewById(R.id.rltMain);
         rltMessage = (RelativeLayout) findViewById(R.id.rltMessage);

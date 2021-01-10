@@ -13,6 +13,6 @@ public class Message {
     public static String usernameInvalid = "Username is invalid";
     public static String speakThisSentence = "Speak this sentence";
     public static String listenAndRepeat = "Listen and repeat";
-    public static String listenAndChooseTheCorrectAnswer = "Listen and choose the correct Answer";
+    public static String listenAndChooseTheCorrectAnswer = "Listen and choose correct answer";
     public static String whatIsThis = "What is this?";
 }
