@@ -79,7 +79,7 @@ public class TestManager {
 
     public static ArrayList<String> getSortArrayList() {
         ArrayList<String> sortArrayList = new ArrayList<>();
-        sortArrayList.add("Highest test score");
+        sortArrayList.add("Highest score");
         sortArrayList.add("Latest test");
         return sortArrayList;
     }

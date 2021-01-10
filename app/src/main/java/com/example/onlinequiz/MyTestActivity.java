@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -30,6 +31,7 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
     Spinner spinnerSort;
     ListView lvTest;
     Button btnBack;
+    ImageView imgChartIcon;
     TestAdapter testAdapter;
     ArrayList<Test> testArrayList;
 
@@ -50,6 +52,17 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
         initInternetStatusFragment();
         initSortSpinner();
         initBtnBackClick();
+        initImgChartIconClick();
+    }
+
+    private void initImgChartIconClick(){
+        imgChartIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MyTestActivity.this, ChartActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     private void initBtnBackClick(){
@@ -70,7 +83,10 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
         if (testArrayList.size() > 0) {
             rltMessage.setVisibility(View.GONE);
             initListView();
-        } else rltMain.setVisibility(View.GONE);
+        } else{
+            rltMain.setVisibility(View.GONE);
+            imgChartIcon.setVisibility(View.GONE);
+        }
     }
 
     private void initSortSpinner() {
@@ -88,7 +104,7 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
         String sortValue = getCurrentSortValue();
         if (sortValue.equals("Latest test")) {
             Common.getCurrentUser().getTestManager().sortByDate();
-        } else if (sortValue.equals("Highest test score")) {
+        } else if (sortValue.equals("Highest score")) {
             Common.getCurrentUser().getTestManager().sortByScore();
         }
     }
@@ -138,6 +154,7 @@ public class MyTestActivity extends Activity implements ICallback<Question> {
 
     private void mapping() {
         btnBack = (Button) findViewById(R.id.btnBack);
+        imgChartIcon = (ImageView) findViewById(R.id.imgPieChart);
         lvTest = (ListView) findViewById(R.id.lvTest);
         rltMain = (RelativeLayout) findViewById(R.id.rltMain);
         rltMessage = (RelativeLayout) findViewById(R.id.rltMessage);
